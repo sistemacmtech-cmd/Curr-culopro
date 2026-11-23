@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f172a" />
-  <meta name="description" content="Criador de Currículo Profissional Offline (PWA) com modelos A4, pré-visualização em tempo real e exportação PDF." />
+  <meta name="theme-color" content="#1e3a8a" />
+  <meta name="description" content="CurrículoPro PWA — Criador de Currículo Profissional Offline (PWA) com etapas opcionais, pré-visualização ao vivo, 5 modelos, paletas de cores e download em PDF A4." />
   <title>CurrículoPro PWA — Criador de Currículo Profissional</title>
 
   <!-- Google Fonts para tipografias selecionáveis -->
@@ -34,13 +34,12 @@
   </script>
 
   <style>
-    /* Estilos Base e Variáveis de Tema do Currículo */
+    /* Variáveis dinâmicas do tema do currículo */
     :root {
       --cv-primary: #1e40af;
       --cv-primary-light: #eff6ff;
-      --cv-primary-border: rgba(30, 64, 175, 0.25);
+      --cv-primary-border: rgba(30, 64, 175, 0.28);
       --cv-font: 'Inter', sans-serif;
-      --cv-scale: 1;
     }
 
     body {
@@ -48,7 +47,7 @@
       overflow-x: hidden;
     }
 
-    /* Scrollbars elegantes na UI */
+    /* Scrollbars suaves */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -57,14 +56,14 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.4);
+      background: rgba(148, 163, 184, 0.45);
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(148, 163, 184, 0.7);
+      background: rgba(148, 163, 184, 0.75);
     }
 
-    /* Folha A4 Realística na Tela */
+    /* Folha A4 realística na tela */
     .a4-wrapper {
       width: 100%;
       display: flex;
@@ -78,7 +77,7 @@
       min-height: 297mm;
       background-color: #ffffff;
       color: #1e293b;
-      box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 22px 55px -14px rgba(15, 23, 42, 0.28);
       font-family: var(--cv-font);
       transform-origin: top center;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -86,47 +85,48 @@
       box-sizing: border-box;
     }
 
-    /* Ajustes de tamanho de fonte do currículo */
+    /* Escala tipográfica do currículo */
     .cv-size-compact { font-size: 9.2pt; line-height: 1.42; }
     .cv-size-standard { font-size: 10pt; line-height: 1.5; }
     .cv-size-comfortable { font-size: 10.8pt; line-height: 1.58; }
 
+    /* Classes utilitárias ligadas à cor escolhida */
     .cv-primary-text { color: var(--cv-primary); }
     .cv-primary-bg { background-color: var(--cv-primary); }
     .cv-primary-border { border-color: var(--cv-primary); }
     .cv-primary-soft { background-color: var(--cv-primary-light); }
     .cv-primary-subtle-border { border-color: var(--cv-primary-border); }
 
-    /* Ocultar barra de rolagem horizontal das etapas */
+    /* Ocultar barra horizontal das pílulas de etapas */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Evitar cortes quebrados na impressão */
+    /* Evitar quebras ruins entre páginas */
     .cv-block {
       break-inside: avoid;
       page-break-inside: avoid;
       transition: box-shadow 0.35s ease, outline-color 0.35s ease, background-color 0.35s ease;
     }
 
-    /* Destaque temporário ao inspecionar a seção da etapa atual na folha A4 */
+    /* Destaque ao inspecionar a seção da etapa atual na folha A4 */
     .cv-step-highlight {
       outline: 2.5px solid var(--cv-primary) !important;
       outline-offset: 4px;
       border-radius: 10px;
       background-color: var(--cv-primary-light) !important;
-      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.12);
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.14);
     }
 
-    /* Animação Toast */
+    /* Animação dos avisos Toast */
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(14px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .toast-enter {
-      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* REGRAS DE IMPRESSÃO A4 (100% PERFEITAS) */
+    /* Impressão A4 nativa limpa */
     @media print {
       @page {
         size: A4 portrait;
@@ -143,7 +143,6 @@
         print-color-adjust: exact !important;
       }
 
-      /* Ocultar toda a interface do app */
       .no-print,
       header,
       aside,
@@ -153,7 +152,6 @@
         display: none !important;
       }
 
-      /* Exibir somente a folha A4 em tamanho real sem escalas */
       main,
       #preview-pane,
       .a4-wrapper {
@@ -180,13 +178,13 @@
 </head>
 <body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 min-h-screen flex flex-col">
 
-  <!-- ==================== TOP NAVBAR ==================== -->
+  <!-- ==================== CABEÇALHO SUPERIOR ==================== -->
   <header class="no-print sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-3 sm:px-6 py-2.5">
     <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-2">
-      
-      <!-- Logo & Status PWA -->
+
+      <!-- Marca & Status PWA -->
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-blue-900 text-white flex items-center justify-center shadow-sm">
+        <div class="w-9 h-9 rounded-xl bg-blue-900 text-white flex items-center justify-center shadow-sm shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -196,7 +194,7 @@
             <h1 class="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white leading-none">
               Currículo<span class="text-blue-600 dark:text-blue-400">Pro</span>
             </h1>
-            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60" id="pwa-status-badge">
+            <span id="pwa-status-badge" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
               Offline Pronto
             </span>
@@ -208,28 +206,24 @@
         </div>
       </div>
 
-      <!-- Ações Principais -->
+      <!-- Ações Globais -->
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <!-- Botão Instalar PWA (aparece se disponível) -->
-        <button id="btn-install-pwa" onclick="installPWA()" class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 transition">
+        <button type="button" id="btn-install-pwa" onclick="installPWA()" class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           <span class="hidden md:inline">Instalar App</span>
         </button>
 
-        <!-- Gerenciar Perfis / Backup JSON -->
-        <button onclick="openDataModal()" title="Perfis Salvos, Backup JSON e Exemplos" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition">
+        <button type="button" onclick="openDataModal()" title="Perfis Salvos, Backup JSON e Exemplos" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
           <span class="hidden sm:inline">Dados & Backup</span>
         </button>
 
-        <!-- Alternar Dark Mode -->
-        <button onclick="toggleDarkMode()" title="Alternar Modo Claro / Escuro" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition" aria-label="Alternar tema">
-          <svg id="icon-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          <svg id="icon-moon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <button type="button" onclick="toggleDarkMode()" title="Alternar Modo Claro / Escuro" aria-label="Alternar tema" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition">
+          <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
 
-        <!-- Botão Exportar PDF / Imprimir -->
-        <button onclick="goToStep(6)" class="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white shadow-sm shadow-blue-600/20 transition">
+        <button type="button" onclick="goToStep(6)" class="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white shadow-sm shadow-blue-600/20 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           <span>Finalizar & PDF</span>
         </button>
@@ -237,48 +231,43 @@
     </div>
   </header>
 
-  <!-- ==================== NAVEGAÇÃO MOBILE / TABLET ==================== -->
+  <!-- ==================== SELETOR DE VISÃO MOBILE / TABLET ==================== -->
   <nav id="mobile-tabs" class="no-print lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 py-2 sticky top-[57px] z-20">
     <div class="grid grid-cols-2 gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-      <button onclick="setMobileView('edit')" id="mob-view-edit" class="py-2 px-3 rounded-lg text-xs font-semibold transition bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm flex items-center justify-center gap-1.5">
+      <button type="button" onclick="setMobileView('edit')" id="mob-view-edit" class="py-2 px-3 rounded-lg text-xs font-semibold transition bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm flex items-center justify-center gap-1.5">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         Preencher Etapas
       </button>
-      <button onclick="setMobileView('preview')" id="mob-view-preview" class="py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5">
+      <button type="button" onclick="setMobileView('preview')" id="mob-view-preview" class="py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
         Ver Folha A4
       </button>
     </div>
   </nav>
 
-  <!-- ==================== ÁREA PRINCIPAL ==================== -->
+  <!-- ==================== ÁREA PRINCIPAL DIVIDIDA ==================== -->
   <main class="flex-1 max-w-[1600px] w-full mx-auto flex flex-col lg:flex-row">
 
-    <!-- ==================== PAINEL ESQUERDO: WIZARD POR ETAPAS ==================== -->
+    <!-- ==================== COLUNA ESQUERDA: WIZARD DE 7 ETAPAS ==================== -->
     <aside id="editor-pane" class="no-print w-full lg:w-[520px] xl:w-[560px] shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 lg:h-[calc(100vh-58px)] flex flex-col">
 
-      <!-- Barra de Progresso e Atalhos das 7 Etapas -->
+      <!-- Barra de Progresso, Pílulas e Inspeção da Etapa -->
       <div class="p-3 sm:p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/90 space-y-2.5 shrink-0">
         <div class="flex items-center justify-between text-xs">
           <span id="step-counter-label" class="font-bold text-blue-600 dark:text-blue-400">Etapa 1 de 7</span>
           <span class="text-[11px] text-slate-500 dark:text-slate-400">Tudo é opcional — pule o que não quiser</span>
         </div>
 
-        <!-- Barra de Progresso Visual -->
         <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
           <div id="step-progress-bar" class="h-full bg-blue-600 transition-all duration-300 rounded-full" style="width: 14.28%"></div>
         </div>
 
-        <!-- Pílulas de Salto Rápido entre Etapas -->
-        <div id="step-pills-container" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5 pb-0.5">
-          <!-- Renderizado via JS -->
-        </div>
+        <!-- Pílulas de navegação livre entre etapas -->
+        <div id="step-pills-container" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5 pb-0.5"></div>
 
-        <!-- Barra de Inspeção Rápida da Etapa Atual -->
+        <!-- Status da etapa atual + botão de pré-visualização da etapa -->
         <div id="step-inspection-bar" class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-800">
-          <div id="step-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-200/70 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-            <!-- Preenchido dinamicamente por refreshStepInspectionUI() -->
-          </div>
+          <div id="step-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-200/70 text-slate-700 dark:bg-slate-800 dark:text-slate-300"></div>
           <button type="button" id="btn-preview-current-step" onclick="previewCurrentStep()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white shadow-sm transition">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -289,18 +278,18 @@
         </div>
       </div>
 
-      <!-- Conteúdo Rolável da Etapa Atual -->
+      <!-- Conteúdo Rolável das Etapas -->
       <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
 
-        <!-- ==================== ETAPA 1: DADOS PESSOAIS & FOTO ==================== -->
+        <!-- ETAPA 1: DADOS PESSOAIS & FOTO -->
         <div id="step-panel-0" class="step-panel space-y-4">
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 mb-1">Etapa 1 • Opcional</span>
             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Dados Pessoais & Contato</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Preencha apenas as informações que deseja exibir no topo do currículo.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Preencha apenas os campos que quiser exibir no currículo.</p>
           </div>
 
-          <!-- Upload de Foto -->
+          <!-- Upload e enquadramento de foto -->
           <div class="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700">
             <div class="relative w-16 h-16 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 shrink-0 border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center">
               <img id="editor-photo-preview" src="" alt="Foto" class="w-full h-full object-cover hidden" />
@@ -329,53 +318,53 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div class="sm:col-span-2">
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nome Completo</label>
-              <input type="text" id="field-fullName" oninput="updatePersonal('fullName', this.value); refreshStepInspectionUI();" placeholder="Ex: Mariana Costa Silva" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" id="field-fullName" oninput="updatePersonal('fullName', this.value)" placeholder="Ex: Mariana Costa Silva" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
             <div class="sm:col-span-2">
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Cargo Desejado / Título Profissional</label>
-              <input type="text" id="field-jobTitle" oninput="updatePersonal('jobTitle', this.value); refreshStepInspectionUI();" placeholder="Ex: Analista Administrativo / Desenvolvedor Web" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" id="field-jobTitle" oninput="updatePersonal('jobTitle', this.value)" placeholder="Ex: Analista Administrativo / Desenvolvedora Web" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">E-mail</label>
-              <input type="email" id="field-email" oninput="updatePersonal('email', this.value); refreshStepInspectionUI();" placeholder="seuemail@dominio.com.br" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="email" id="field-email" oninput="updatePersonal('email', this.value)" placeholder="seuemail@dominio.com.br" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Telefone / WhatsApp</label>
-              <input type="tel" id="field-phone" oninput="updatePersonal('phone', this.value); refreshStepInspectionUI();" placeholder="(31) 99876-5432" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="tel" id="field-phone" oninput="updatePersonal('phone', this.value)" placeholder="(31) 99876-5432" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Cidade / Estado</label>
-              <input type="text" id="field-location" oninput="updatePersonal('location', this.value); refreshStepInspectionUI();" placeholder="Belo Horizonte, MG" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" id="field-location" oninput="updatePersonal('location', this.value)" placeholder="Belo Horizonte, MG" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">LinkedIn</label>
-              <input type="text" id="field-linkedin" oninput="updatePersonal('linkedin', this.value); refreshStepInspectionUI();" placeholder="linkedin.com/in/seuperfil" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" id="field-linkedin" oninput="updatePersonal('linkedin', this.value)" placeholder="linkedin.com/in/seuperfil" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
             <div class="sm:col-span-2">
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Portfólio / GitHub / Site</label>
-              <input type="text" id="field-website" oninput="updatePersonal('website', this.value); refreshStepInspectionUI();" placeholder="github.com/seuperfil ou meuportfolio.com.br" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" id="field-website" oninput="updatePersonal('website', this.value)" placeholder="github.com/seuperfil ou meuportfolio.com.br" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
           </div>
         </div>
 
-        <!-- ==================== ETAPA 2: OBJETIVO & RESUMO PROFISSIONAL ==================== -->
+        <!-- ETAPA 2: RESUMO PROFISSIONAL -->
         <div id="step-panel-1" class="step-panel hidden space-y-4">
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 mb-1">Etapa 2 • Opcional</span>
             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Objetivo & Resumo Profissional</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Se deixar em branco, esta seção não aparecerá no currículo.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Se ficar vazio, esta seção não aparece no currículo.</p>
           </div>
 
           <div class="space-y-3">
-            <textarea id="field-summary" rows="5" oninput="updateSummary(this.value); refreshStepInspectionUI();" placeholder="Escreva seu objetivo profissional ou um breve resumo das suas qualificações..." class="w-full px-3.5 py-3 rounded-2xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none resize-y"></textarea>
+            <textarea id="field-summary" rows="5" oninput="updateSummary(this.value)" placeholder="Escreva seu objetivo profissional ou um breve resumo das suas qualificações..." class="w-full px-3.5 py-3 rounded-2xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none resize-y"></textarea>
 
             <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-              <span>Dica: seja direto e destaque seus pontos fortes</span>
+              <span>Dica: destaque suas principais entregas e áreas de atuação</span>
               <span id="summary-char-count" class="font-semibold">0 caracteres</span>
             </div>
 
             <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-2">
-              <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">Preencher com texto pronto (clique para usar):</p>
+              <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">Modelos rápidos de resumo (clique para aplicar):</p>
               <div class="flex flex-wrap gap-2">
                 <button type="button" onclick="applySummaryPreset('gestao')" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition">Gestão & Administrativo</button>
                 <button type="button" onclick="applySummaryPreset('tech')" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition">Tecnologia & Produto</button>
@@ -386,17 +375,15 @@
           </div>
         </div>
 
-        <!-- ==================== ETAPA 3: EXPERIÊNCIA PROFISSIONAL ==================== -->
+        <!-- ETAPA 3: EXPERIÊNCIA PROFISSIONAL -->
         <div id="step-panel-2" class="step-panel hidden space-y-4">
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 mb-1">Etapa 3 • Opcional</span>
             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Experiência Profissional</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Não possui experiência ou prefere pular? Clique em "Pular esta etapa" abaixo.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Adicione cargos, reordene ou pule esta etapa se preferir.</p>
           </div>
 
-          <div id="experience-list" class="space-y-3">
-            <!-- Cards dinâmicos via JS -->
-          </div>
+          <div id="experience-list" class="space-y-3"></div>
 
           <button type="button" onclick="addExperience()" class="w-full py-3 px-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 flex items-center justify-center gap-2 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -404,17 +391,15 @@
           </button>
         </div>
 
-        <!-- ==================== ETAPA 4: FORMAÇÃO ACADÊMICA ==================== -->
+        <!-- ETAPA 4: FORMAÇÃO ACADÊMICA -->
         <div id="step-panel-3" class="step-panel hidden space-y-4">
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300 mb-1">Etapa 4 • Opcional</span>
             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Formação Acadêmica</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Adicione ensino médio, técnico, graduação ou pós-graduação, ou avance direto.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Inclua cursos técnicos, graduação, pós-graduação ou avance direto.</p>
           </div>
 
-          <div id="education-list" class="space-y-3">
-            <!-- Cards dinâmicos via JS -->
-          </div>
+          <div id="education-list" class="space-y-3"></div>
 
           <button type="button" onclick="addEducation()" class="w-full py-3 px-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 flex items-center justify-center gap-2 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -422,19 +407,18 @@
           </button>
         </div>
 
-        <!-- ==================== ETAPA 5: HABILIDADES & IDIOMAS ==================== -->
+        <!-- ETAPA 5: HABILIDADES & IDIOMAS -->
         <div id="step-panel-4" class="step-panel hidden space-y-5">
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300 mb-1">Etapa 5 • Opcional</span>
             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Habilidades & Idiomas</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Destaque suas ferramentas, competências técnicas, comportamentais e idiomas.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Cadastre suas competências com nível opcional e idiomas.</p>
           </div>
 
-          <!-- Habilidades -->
           <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Competências & Ferramentas</h3>
             <div class="flex flex-col sm:flex-row gap-2">
-              <input type="text" id="new-skill-name" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}" placeholder="Ex: Pacote Office, Atendimento, Excel..." class="flex-1 px-3 py-2 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" id="new-skill-name" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}" placeholder="Ex: Excel, React, Liderança, Atendimento..." class="flex-1 px-3 py-2 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none" />
               <div class="flex gap-2">
                 <select id="new-skill-level" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 outline-none">
                   <option value="">Sem nível</option>
@@ -447,61 +431,51 @@
                 </button>
               </div>
             </div>
-            <div id="skills-tags-container" class="flex flex-wrap gap-2">
-              <!-- Tags dinâmicas via JS -->
-            </div>
+            <div id="skills-tags-container" class="flex flex-wrap gap-2"></div>
           </div>
 
-          <!-- Idiomas -->
           <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Idiomas</h3>
-            <div id="languages-list" class="space-y-2">
-              <!-- Itens via JS -->
-            </div>
+            <div id="languages-list" class="space-y-2"></div>
             <button type="button" onclick="addLanguage()" class="w-full py-2.5 px-4 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition">
               + Adicionar Idioma
             </button>
           </div>
         </div>
 
-        <!-- ==================== ETAPA 6: CERTIFICAÇÕES, PROJETOS & EXTRAS ==================== -->
+        <!-- ETAPA 6: CURSOS, CERTIFICAÇÕES & EXTRAS -->
         <div id="step-panel-5" class="step-panel hidden space-y-4">
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 mb-1">Etapa 6 • Opcional</span>
-            <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Cursos, Certificações & Informações Extras</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Inclua cursos complementares, certificações, projetos ou disponibilidade/CNH.</p>
+            <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Cursos, Projetos & Informações Extras</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Adicione certificações, projetos, links ou observações complementares.</p>
           </div>
 
-          <div id="certifications-list" class="space-y-2.5">
-            <!-- Itens via JS -->
-          </div>
+          <div id="certifications-list" class="space-y-2.5"></div>
 
           <button type="button" onclick="addCertification()" class="w-full py-3 px-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition">
             + Adicionar Curso / Certificação / Projeto
           </button>
 
-          <!-- Informações Adicionais Livres (Ex: CNH, Disponibilidade de horário/viagem) -->
           <div class="pt-2">
             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Informações Complementares (Opcional)</label>
-            <textarea id="field-additionalInfo" rows="2" oninput="updateAdditionalInfo(this.value); refreshStepInspectionUI();" placeholder="Ex: CNH Categoria B • Disponibilidade imediata e para viagens • Trabalho voluntário..." class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none resize-y"></textarea>
+            <textarea id="field-additionalInfo" rows="2" oninput="updateAdditionalInfo(this.value)" placeholder="Ex: CNH Categoria B • Disponibilidade imediata • Portfólio em destaque..." class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none resize-y"></textarea>
           </div>
         </div>
 
-        <!-- ==================== ETAPA 7: MODELOS, CORES, ESTILO & BAIXAR PDF ==================== -->
+        <!-- ETAPA 7: MODELOS, CORES, ESTILO & BAIXAR PDF -->
         <div id="step-panel-6" class="step-panel hidden space-y-5">
           <div>
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 mb-1">Etapa Final • Personalizar & Baixar</span>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 mb-1">Etapa Final • Estilo & Download</span>
             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Escolha o Modelo, Cores & Baixe em PDF</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Alterne livremente entre 5 modelos e dezenas de cores antes de baixar seu PDF A4.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Personalize o visual e baixe seu currículo em PDF A4.</p>
           </div>
 
-          <!-- Card de Conclusão & Download Direto PDF -->
+          <!-- Card principal de download -->
           <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-600/20 space-y-3.5">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <h3 class="font-extrabold text-base flex items-center gap-2">
-                  <span>Seu Currículo Está Pronto!</span>
-                </h3>
+                <h3 class="font-extrabold text-base">Seu Currículo Está Pronto!</h3>
                 <p id="final-summary-stats" class="text-xs text-blue-100 mt-0.5">
                   Layout A4 configurado automaticamente com suas seções preenchidas.
                 </p>
@@ -514,39 +488,35 @@
                 <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 <span>Baixar Currículo em PDF</span>
               </button>
-              <button type="button" onclick="exportPDFNative()" title="Abrir diálogo de impressão A4 do sistema" class="py-3 px-3.5 rounded-xl bg-blue-800/70 hover:bg-blue-800 border border-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition">
+              <button type="button" onclick="exportPDFNative()" title="Abrir impressão A4 do sistema" class="py-3 px-3.5 rounded-xl bg-blue-800/70 hover:bg-blue-800 border border-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 <span>Imprimir</span>
               </button>
             </div>
           </div>
 
-          <!-- Escolha de Modelo (5 Modelos) -->
+          <!-- 5 Modelos -->
           <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-3">
             <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-blue-600"></span>
               1. Escolha o Modelo de Currículo (5 Opções)
             </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="template-selector">
-              <!-- Renderizado via JS -->
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="template-selector"></div>
           </div>
 
-          <!-- Paleta de Cores (12+ Cores + Color Picker Livre) -->
+          <!-- 12 Paletas + Seletor Livre -->
           <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2">
               <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-blue-600"></span>
                 2. Escolha a Cor do Currículo
               </h3>
-              <span id="selected-color-name" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Azul Corporativo</span>
+              <span id="selected-color-name" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">Azul Corporativo</span>
             </div>
-            <div class="grid grid-cols-4 sm:grid-cols-6 gap-2.5" id="color-selector">
-              <!-- Renderizado via JS -->
-            </div>
+            <div class="grid grid-cols-4 sm:grid-cols-6 gap-2" id="color-selector"></div>
           </div>
 
-          <!-- Tipografia, Tamanho e Foto -->
+          <!-- Fonte, Tamanho e Foto -->
           <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-4">
             <div>
               <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-2">3. Fonte & Espaçamento</h3>
@@ -557,7 +527,7 @@
             <div class="pt-2.5 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
               <div>
                 <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">Exibir Foto no Currículo</p>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400">Ative ou oculte sua foto a qualquer momento</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Mostra ou oculta a foto carregada</p>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" id="toggle-show-photo" class="sr-only peer" onchange="updateSetting('showPhoto', this.checked)">
@@ -569,7 +539,7 @@
 
       </div>
 
-      <!-- Barra Inferior Fixa de Navegação entre Etapas (Anterior / Pular / Próximo) -->
+      <!-- Rodapé Fixo de Navegação -->
       <div class="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-wrap items-center justify-between gap-2 shrink-0">
         <button type="button" id="btn-prev-step" onclick="prevStep()" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 disabled:opacity-40 transition">
           ← Anterior
@@ -593,10 +563,10 @@
       </div>
     </aside>
 
-    <!-- ==================== PAINEL DIREITO: PRÉ-VISUALIZAÇÃO A4 ==================== -->
+    <!-- ==================== COLUNA DIREITA: PRÉ-VISUALIZAÇÃO A4 ==================== -->
     <section id="preview-pane" class="hidden lg:flex flex-1 flex-col items-center bg-slate-200/80 dark:bg-slate-950 lg:h-[calc(100vh-58px)] lg:overflow-y-auto p-3 sm:p-6">
-      
-      <!-- Barra de Controle do Zoom / Inspeção da Etapa / Ações Rápidas da Folha -->
+
+      <!-- Barra de Controle do Zoom & Inspeção -->
       <div class="no-print w-full max-w-[210mm] mb-4 flex flex-wrap items-center justify-between gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-4 py-2 rounded-2xl border border-slate-300/70 dark:border-slate-800 shadow-sm">
         <div class="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
           <span class="font-semibold">Formato:</span>
@@ -611,61 +581,55 @@
         </div>
 
         <div class="flex items-center gap-1.5">
-          <button onclick="adjustZoom(-0.1)" title="Diminuir Zoom" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <button type="button" onclick="adjustZoom(-0.1)" title="Diminuir Zoom" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg>
           </button>
           <span id="zoom-label" class="text-xs font-semibold w-12 text-center">100%</span>
-          <button onclick="adjustZoom(0.1)" title="Aumentar Zoom" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <button type="button" onclick="adjustZoom(0.1)" title="Aumentar Zoom" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
           </button>
-          <button onclick="fitA4ToScreen()" class="ml-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+          <button type="button" onclick="fitA4ToScreen()" class="ml-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
             Ajustar Tela
           </button>
-          <button onclick="downloadDirectPDF()" class="ml-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white transition flex items-center gap-1">
+          <button type="button" onclick="downloadDirectPDF()" class="ml-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white transition flex items-center gap-1">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
             PDF
           </button>
         </div>
       </div>
 
-      <!-- Container da Folha A4 -->
+      <!-- Folha A4 -->
       <div class="a4-wrapper" id="a4-wrapper">
-        <div id="cv-paper" class="a4-sheet cv-size-standard">
-          <!-- O currículo é renderizado dinamicamente aqui -->
-        </div>
+        <div id="cv-paper" class="a4-sheet cv-size-standard"></div>
       </div>
 
     </section>
 
   </main>
 
-  <!-- ==================== MODAL DE GERENCIAMENTO DE DADOS / PERFIS ==================== -->
+  <!-- ==================== MODAL DE DADOS, PERFIS & BACKUP JSON ==================== -->
   <div id="modal-backdrop" class="no-print fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-5">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-base text-slate-900 dark:text-white">Gerenciar Dados, Perfis & Backup</h3>
-        <button onclick="closeDataModal()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
+        <button type="button" onclick="closeDataModal()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <!-- Salvar Versão / Perfil Local -->
       <div class="space-y-2">
         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Salvar Versão / Perfil no Navegador</label>
         <div class="flex gap-2">
-          <input type="text" id="profile-name-input" placeholder="Ex: Currículo Vaga Tech Lead" class="flex-1 px-3 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
-          <button onclick="saveNamedProfile()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition">Salvar</button>
+          <input type="text" id="profile-name-input" placeholder="Ex: Currículo Vaga Produto" class="flex-1 px-3 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
+          <button type="button" onclick="saveNamedProfile()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition">Salvar</button>
         </div>
-        <div id="saved-profiles-list" class="max-h-36 overflow-y-auto space-y-1.5 pt-1">
-          <!-- Perfis salvos listados via JS -->
-        </div>
+        <div id="saved-profiles-list" class="max-h-36 overflow-y-auto space-y-1.5 pt-1"></div>
       </div>
 
-      <!-- Exportar / Importar JSON -->
       <div class="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
         <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Backup Externo (Arquivo JSON)</p>
         <div class="grid grid-cols-2 gap-2.5">
-          <button onclick="exportJSON()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition">
+          <button type="button" onclick="exportJSON()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition">
             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
             Exportar JSON
           </button>
@@ -677,31 +641,29 @@
         </div>
       </div>
 
-      <!-- Ações de Reset / Dados de Exemplo -->
       <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
-        <button onclick="loadSampleData()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-xs font-semibold transition">
+        <button type="button" onclick="loadSampleData()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-xs font-semibold transition">
           Carregar Exemplo Preenchido
         </button>
-        <button onclick="requestClearAll()" id="btn-clear-data" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 text-xs font-semibold transition">
+        <button type="button" onclick="requestClearAll()" id="btn-clear-data" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 text-xs font-semibold transition">
           Limpar Tudo
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== NOTIFICAÇÕES TOAST ==================== -->
+  <!-- ==================== TOASTS ==================== -->
   <div id="toast-container" class="no-print fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- ==================== JAVASCRIPT COMPLETO ==================== -->
+  <!-- ==================== SCRIPT PRINCIPAL ==================== -->
   <script>
     // =========================================================================
-    // 1. CONFIGURAÇÃO PWA DINÂMICA (MANIFEST + SERVICE WORKER INLINE)
+    // 1. PWA DINÂMICO (MANIFEST BLOB + SERVICE WORKER COM FALLBACK SEGURO)
     // =========================================================================
     let deferredInstallPrompt = null;
 
     (function initPWA() {
       try {
-        // Ícone SVG embutido como Data URL para o Manifest
         const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#1e3a8a"/><path d="M160 128h128l64 64v192a32 32 0 01-32 32H160a32 32 0 01-32-32V160a32 32 0 0132-32z" fill="#ffffff"/><path d="M288 128v64h64" fill="#93c5fd"/><rect x="176" y="232" width="128" height="20" rx="10" fill="#1e3a8a"/><rect x="176" y="276" width="160" height="20" rx="10" fill="#64748b"/><rect x="176" y="320" width="112" height="20" rx="10" fill="#64748b"/></svg>`;
         const iconUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgIcon)));
 
@@ -726,16 +688,15 @@
         linkEl.href = manifestURL;
         document.head.appendChild(linkEl);
 
-        // Service Worker Inline via Blob para cache offline
-        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+        // Registra Service Worker apenas em origens http/https compatíveis
+        const isSafeHttpOrigin = (location.protocol === 'https:' || location.protocol === 'http:') && !location.hostname.includes('usercontent');
+        if ('serviceWorker' in navigator && isSafeHttpOrigin) {
           const swCode = `
-            const CACHE_NAME = 'curriculopro-pwa-v1';
+            const CACHE_NAME = 'curriculopro-pwa-v2';
             self.addEventListener('install', (event) => {
               self.skipWaiting();
               event.waitUntil(
-                caches.open(CACHE_NAME).then((cache) => {
-                  return cache.addAll([self.location.origin + '/']).catch(() => {});
-                })
+                caches.open(CACHE_NAME).then((cache) => cache.addAll([self.location.href]).catch(() => {}))
               );
             });
             self.addEventListener('activate', (event) => {
@@ -746,7 +707,7 @@
               event.respondWith(
                 caches.match(event.request).then((cached) => {
                   const networkFetch = fetch(event.request).then((response) => {
-                    if (response && response.status === 200) {
+                    if (response && response.status === 200 && response.type === 'basic') {
                       const clone = response.clone();
                       caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
                     }
@@ -762,7 +723,7 @@
           navigator.serviceWorker.register(swUrl).catch(() => {});
         }
       } catch (e) {
-        console.warn('PWA init fallback:', e);
+        console.warn('PWA fallback:', e);
       }
     })();
 
@@ -791,20 +752,20 @@
     }
 
     // =========================================================================
-    // 2. ESTADO DA APLICAÇÃO & DADOS DE EXEMPLO
+    // 2. ESTADO GLOBAL & DADOS DE EXEMPLO
     // =========================================================================
-    const STORAGE_KEY = 'curriculopro_data_v1';
-    const PROFILES_KEY = 'curriculopro_profiles_v1';
-    const THEME_KEY = 'curriculopro_darkmode_v1';
+    const STORAGE_KEY = 'curriculopro_data_v2';
+    const PROFILES_KEY = 'curriculopro_profiles_v2';
+    const THEME_KEY = 'curriculopro_darkmode_v2';
 
     const SAMPLE_DATA = {
       settings: {
-        template: 'modern', // 'classic' | 'modern' | 'minimal' | 'banner' | 'sidebarRight'
+        template: 'modern',
         color: '#1e40af',
         colorName: 'Azul Corporativo',
         colorLight: '#eff6ff',
         font: 'Inter',
-        size: 'standard', // 'compact' | 'standard' | 'comfortable'
+        size: 'standard',
         showPhoto: true
       },
       personal: {
@@ -881,9 +842,10 @@
     let currentStep = 0;
     let currentZoom = 1;
     let clearConfirmTimeout = null;
-    let skippedSteps = new Set();
+    let autoSaveTimeout = null;
     let stepHighlightTimeout = null;
     let inspectingStepId = null;
+    const skippedSteps = new Set();
 
     const WIZARD_STEPS = [
       { id: 0, short: '1. Dados', title: 'Dados Pessoais', cvAnchor: 'header' },
@@ -895,12 +857,27 @@
       { id: 6, short: '7. Estilo & PDF', title: 'Modelos, Cores & PDF', cvAnchor: 'header' }
     ];
 
+    const TEMPLATES = [
+      { id: 'modern', name: 'Moderno 2 Colunas', desc: 'Barra lateral esquerda colorida' },
+      { id: 'classic', name: 'Executivo Clássico', desc: 'Tradicional com linhas elegantes' },
+      { id: 'banner', name: 'Criativo & Banner', desc: 'Topo em destaque com faixa forte' },
+      { id: 'minimal', name: 'Minimalista Tech', desc: 'Limpo, arejado e moderno' },
+      { id: 'sidebarRight', name: 'Compacto Corporativo', desc: 'Barra lateral direita em tom suave' }
+    ];
+
     const PALETTES = [
-      { name: 'Azul Marinho Executivo', hex: '#1e3a8a', light: '#eff6ff' },
-      { name: 'Preto & Branco Clássico', hex: '#18181b', light: '#f4f4f5' },
-      { name: 'Verde Esmeralda', hex: '#065f46', light: '#ecfdf5' },
-      { name: 'Cinza Grafite', hex: '#334155', light: '#f1f5f9' },
-      { name: 'Vinho / Bordô', hex: '#881337', light: '#fff1f2' }
+      { name: 'Azul Corporativo', hex: '#1e40af', light: '#eff6ff' },
+      { name: 'Azul Marinho', hex: '#0f172a', light: '#f1f5f9' },
+      { name: 'Verde Esmeralda', hex: '#047857', light: '#ecfdf5' },
+      { name: 'Verde Floresta', hex: '#15803d', light: '#f0fdf4' },
+      { name: 'Bordô Executivo', hex: '#881337', light: '#fff1f2' },
+      { name: 'Vermelho Terracota', hex: '#b91c1c', light: '#fef2f2' },
+      { name: 'Roxo Inovação', hex: '#6d28d9', light: '#f5f3ff' },
+      { name: 'Índigo Moderno', hex: '#4338ca', light: '#eef2ff' },
+      { name: 'Grafite Elegante', hex: '#334155', light: '#f8fafc' },
+      { name: 'Dourado / Âmbar', hex: '#b45309', light: '#fffbeb' },
+      { name: 'Petróleo / Teal', hex: '#0f766e', light: '#f0fdfa' },
+      { name: 'Rosa Antigo / Malva', hex: '#9d174d', light: '#fdf2f8' }
     ];
 
     const FONTS = [
@@ -915,115 +892,97 @@
       { id: 'comfortable', label: 'Confortável' }
     ];
 
-    function hexToSoftBg(hex) {
-      // Gera um tom pastel muito suave para fundos secundários
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, 0.08)`;
+    // =========================================================================
+    // 3. UTILITÁRIOS GERAIS & SALVAMENTO AUTOMÁTICO
+    // =========================================================================
+    function uid(prefix = 'id') {
+      return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
     }
 
-    function renderDesignControls() {
-      // Templates
-      const tplContainer = document.getElementById('template-selector');
-      tplContainer.innerHTML = TEMPLATES.map(t => {
-        const active = cvData.settings.template === t.id;
-        return `
-          <button type="button" onclick="updateSetting('template', '${t.id}')" class="p-3 rounded-xl border-2 text-left transition ${active ? 'border-blue-600 bg-blue-50/70 dark:bg-blue-950/50' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300'}">
-            <div class="text-xs font-bold text-slate-900 dark:text-white">${t.name}</div>
-            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${t.desc}</div>
-          </button>
-        `;
-      }).join('');
-
-      // Paletas
-      const colorContainer = document.getElementById('color-selector');
-      colorContainer.innerHTML = PALETTES.map(p => {
-        const active = cvData.settings.color.toLowerCase() === p.hex.toLowerCase();
-        return `
-          <button type="button" onclick="selectPalette('${p.hex}', '${p.light}')" title="${p.name}" class="w-9 h-9 rounded-full flex items-center justify-center transition transform hover:scale-105 ${active ? 'ring-2 ring-offset-2 ring-blue-600 dark:ring-offset-slate-900' : ''}" style="background-color: ${p.hex}">
-            ${active ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
-          </button>
-        `;
-      }).join('') + `
-        <label title="Cor Personalizada" class="w-9 h-9 rounded-full border-2 border-dashed border-slate-400 flex items-center justify-center cursor-pointer hover:border-blue-500 overflow-hidden relative">
-          <span class="text-xs font-bold text-slate-600 dark:text-slate-300">+</span>
-          <input type="color" value="${cvData.settings.color}" onchange="selectPalette(this.value, hexToSoftBg(this.value))" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer" />
-        </label>
-      `;
-
-      // Fontes
-      document.getElementById('font-selector').innerHTML = FONTS.map(f => {
-        const active = cvData.settings.font === f.id;
-        return `
-          <button type="button" onclick="updateSetting('font', '${f.id}')" class="py-2 px-2 rounded-xl border text-xs font-medium transition ${active ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'}">
-            ${f.label}
-          </button>
-        `;
-      }).join('');
-
-      // Tamanhos
-      document.getElementById('size-selector').innerHTML = SIZES.map(s => {
-        const active = cvData.settings.size === s.id;
-        return `
-          <button type="button" onclick="updateSetting('size', '${s.id}')" class="py-2 px-2 rounded-xl border text-xs font-medium transition ${active ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'}">
-            ${s.label}
-          </button>
-        `;
-      }).join('');
-
-      document.getElementById('toggle-show-photo').checked = cvData.settings.showPhoto;
+    function escapeHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    function selectPalette(hex, light) {
-      cvData.settings.color = hex;
-      cvData.settings.colorLight = light || hexToSoftBg(hex);
-      applyCSSVariables();
-      renderDesignControls();
-      renderCV();
-      triggerAutoSave();
-    }
-
-    function updateSetting(key, val) {
-      cvData.settings[key] = val;
-      applyCSSVariables();
-      renderDesignControls();
-      renderCV();
-      triggerAutoSave();
-    }
-
-    function applyCSSVariables() {
-      const root = document.documentElement;
-      root.style.setProperty('--cv-primary', cvData.settings.color);
-      root.style.setProperty('--cv-primary-light', cvData.settings.colorLight || hexToSoftBg(cvData.settings.color));
-      const fontMap = {
-        Inter: "'Inter', sans-serif",
-        Merriweather: "'Merriweather', serif",
-        Roboto: "'Roboto', sans-serif"
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const palette = {
+        success: 'bg-slate-900 text-white border-emerald-500/60',
+        info: 'bg-slate-900 text-white border-blue-500/60',
+        warning: 'bg-amber-950 text-amber-100 border-amber-500/60'
       };
-      root.style.setProperty('--cv-font', fontMap[cvData.settings.font] || "'Inter', sans-serif");
+      const el = document.createElement('div');
+      el.className = `toast-enter px-4 py-2.5 rounded-xl border text-xs font-medium shadow-xl max-w-xs ${palette[type] || palette.info}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => el.remove(), 260);
+      }, 2800);
+    }
 
-      const paper = document.getElementById('cv-paper');
-      paper.classList.remove('cv-size-compact', 'cv-size-standard', 'cv-size-comfortable');
-      paper.classList.add('cv-size-' + (cvData.settings.size || 'standard'));
+    function triggerAutoSave() {
+      const indicator = document.getElementById('save-indicator');
+      if (indicator) {
+        indicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Salvando...`;
+      }
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(() => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cvData));
+          if (indicator) {
+            indicator.innerHTML = `<svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Salvo localmente`;
+          }
+        } catch (err) {
+          console.warn('Erro ao salvar em localStorage:', err);
+          if (indicator) {
+            indicator.textContent = 'Aviso: limite de armazenamento';
+          }
+        }
+      }, 220);
     }
 
     // =========================================================================
-    // 4. NAVEGAÇÃO WIZARD POR ETAPAS, MOBILE VIEW E DARK MODE
+    // 4. NAVEGAÇÃO DAS 7 ETAPAS OPCIONAIS & INSPEÇÃO AO VIVO
     // =========================================================================
-    function toggleDarkMode() {
-      const html = document.documentElement;
-      const isDark = html.classList.toggle('dark');
-      localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+    function renderStepNavigationUI() {
+      const counter = document.getElementById('step-counter-label');
+      const bar = document.getElementById('step-progress-bar');
+      const pills = document.getElementById('step-pills-container');
+
+      if (counter) counter.textContent = `Etapa ${currentStep + 1} de ${WIZARD_STEPS.length}`;
+      if (bar) bar.style.width = `${((currentStep + 1) / WIZARD_STEPS.length) * 100}%`;
+
+      if (pills) {
+        pills.innerHTML = WIZARD_STEPS.map(st => {
+          const active = st.id === currentStep;
+          const skipped = skippedSteps.has(st.id) && !active;
+          const baseClass = active
+            ? 'bg-blue-600 text-white shadow-sm'
+            : skipped
+              ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
+              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400';
+          return `<button type="button" onclick="goToStep(${st.id})" class="px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 transition ${baseClass}">${st.short}</button>`;
+        }).join('');
+      }
+
+      document.querySelectorAll('.step-panel').forEach((panel, idx) => {
+        panel.classList.toggle('hidden', idx !== currentStep);
+      });
     }
 
     function goToStep(stepIdx) {
       if (stepIdx < 0 || stepIdx >= WIZARD_STEPS.length) return;
       currentStep = stepIdx;
       skippedSteps.delete(stepIdx);
+      renderStepNavigationUI();
 
-      // Garantir que no mobile o usuário veja o editor ao clicar em Finalizar
-      // Botões inferiores Anterior / Ver Etapa / Pular / Próximo
       const btnPrev = document.getElementById('btn-prev-step');
       const btnSkip = document.getElementById('btn-skip-step');
       const btnNext = document.getElementById('btn-next-step');
@@ -1048,6 +1007,18 @@
       }
 
       refreshStepInspectionUI();
+    }
+
+    function nextStep() {
+      if (currentStep < WIZARD_STEPS.length - 1) {
+        goToStep(currentStep + 1);
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        goToStep(currentStep - 1);
+      }
     }
 
     function skipCurrentStep() {
@@ -1089,7 +1060,7 @@
           const certCount = getValidCertifications().length;
           const hasExtra = Boolean((cvData.additionalInfo || '').trim());
           const totalItems = certCount + (hasExtra ? 1 : 0);
-          return { filled: totalItems, total: Math.max(1, totalItems), label: totalItems > 0 ? `${certCount} item(ns) e ${hasExtra ? 'extras preenchidos' : 'sem extras'}` : 'Nenhum curso ou extra adicionado' };
+          return { filled: totalItems, total: Math.max(1, totalItems), label: totalItems > 0 ? `${certCount} curso(s)/item(ns) e ${hasExtra ? 'extras preenchidos' : 'sem extras'}` : 'Nenhum curso ou extra adicionado' };
         }
         default:
           return { filled: 1, total: 1, label: 'Pronto para exportar' };
@@ -1121,9 +1092,7 @@
     }
 
     function clearStepHighlight() {
-      document.querySelectorAll('.cv-step-highlight').forEach(el => {
-        el.classList.remove('cv-step-highlight');
-      });
+      document.querySelectorAll('.cv-step-highlight').forEach(el => el.classList.remove('cv-step-highlight'));
       if (stepHighlightTimeout) {
         clearTimeout(stepHighlightTimeout);
         stepHighlightTimeout = null;
@@ -1178,7 +1147,7 @@
         }
 
         if (info.filled === 0) {
-          showToast(`"${stepObj.title}" ainda não tem dados preenchidos — a seção ficará oculta no PDF até você preencher.`, 'info');
+          showToast(`"${stepObj.title}" ainda está vazia — ficará oculta no PDF até você preencher.`, 'info');
         } else {
           showToast(`Visualizando "${stepObj.title}" na folha A4.`, 'success');
         }
@@ -1207,33 +1176,21 @@
       }
     }
 
-    function nextStep() {
-      if (currentStep < WIZARD_STEPS.length - 1) {
-        goToStep(currentStep + 1);
-      }
-    }
-
-    function prevStep() {
-      if (currentStep > 0) {
-        goToStep(currentStep - 1);
-      }
-    }
-
     function updateFinalStats() {
       const statsEl = document.getElementById('final-summary-stats');
       if (!statsEl) return;
       const activeSections = [];
-      if (cvData.personal.fullName || cvData.personal.email || cvData.personal.phone) activeSections.push('Dados Pessoais');
-      if (cvData.summary) activeSections.push('Resumo');
-      if (cvData.experiences.length) activeSections.push(`${cvData.experiences.length} Exp.`);
-      if (cvData.education.length) activeSections.push(`${cvData.education.length} Formação`);
-      if (cvData.skills.length) activeSections.push(`${cvData.skills.length} Habilidades`);
-      if (cvData.languages.length) activeSections.push(`${cvData.languages.length} Idiomas`);
-      if (cvData.certifications.length || cvData.additionalInfo) activeSections.push('Extras');
+      if (cvData.personal.fullName || cvData.personal.email || cvData.personal.phone || cvData.personal.jobTitle) activeSections.push('Dados Pessoais');
+      if ((cvData.summary || '').trim()) activeSections.push('Resumo');
+      if (getValidExperiences().length) activeSections.push(`${getValidExperiences().length} Exp.`);
+      if (getValidEducation().length) activeSections.push(`${getValidEducation().length} Formação`);
+      if (getValidSkills().length) activeSections.push(`${getValidSkills().length} Habilidades`);
+      if (getValidLanguages().length) activeSections.push(`${getValidLanguages().length} Idiomas`);
+      if (getValidCertifications().length || (cvData.additionalInfo || '').trim()) activeSections.push('Extras');
 
       statsEl.textContent = activeSections.length
         ? `Seções incluídas: ${activeSections.join(' • ')}`
-        : 'Nenhuma seção preenchida ainda — você pode preencher ou testar com exemplo.';
+        : 'Nenhuma seção preenchida ainda — você pode preencher ou carregar um exemplo.';
     }
 
     function setMobileView(view) {
@@ -1259,176 +1216,174 @@
         setTimeout(fitA4ToScreen, 50);
       }
     }
-    window.addEventListener('resize', () => {
-      if (window.innerWidth < 1024) {
-        const previewPane = document.getElementById('preview-pane');
-        if (!previewPane.classList.contains('hidden')) fitA4ToScreen();
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+      } catch {}
+    }
+
+    // =========================================================================
+    // 5. ZOOM & AJUSTE DA FOLHA A4 NA TELA
+    // =========================================================================
+    function applyZoom() {
+      const sheet = document.getElementById('cv-paper');
+      const wrapper = document.getElementById('a4-wrapper');
+      const label = document.getElementById('zoom-label');
+      if (!sheet || !wrapper) return;
+
+      sheet.style.transform = `scale(${currentZoom})`;
+      // Em mm: altura base A4 é 297mm; ajusta margem inferior para evitar espaço em branco excessivo
+      const baseHeightMm = 297;
+      const diffMm = (currentZoom - 1) * baseHeightMm;
+      wrapper.style.marginBottom = diffMm < 0 ? `${diffMm}mm` : '0px';
+      if (label) label.textContent = `${Math.round(currentZoom * 100)}%`;
+    }
+
+    function adjustZoom(delta) {
+      currentZoom = Math.min(1.4, Math.max(0.4, Number((currentZoom + delta).toFixed(2))));
+      applyZoom();
+    }
+
+    function fitA4ToScreen() {
+      const pane = document.getElementById('preview-pane');
+      if (!pane) return;
+      const availableWidth = pane.clientWidth - 36;
+      const a4PxWidth = 794; // ~210mm a 96dpi
+      if (availableWidth > 0 && availableWidth < a4PxWidth) {
+        currentZoom = Math.max(0.42, Number((availableWidth / a4PxWidth).toFixed(2)));
       } else {
-        // Garantir visibilidade correta ao voltar para desktop
+        currentZoom = 1;
+      }
+      applyZoom();
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) {
         const editorPane = document.getElementById('editor-pane');
+        const previewPane = document.getElementById('preview-pane');
         editorPane.classList.remove('hidden');
         editorPane.classList.add('flex');
-        const previewPane = document.getElementById('preview-pane');
         previewPane.classList.remove('hidden');
         previewPane.classList.add('flex');
-        fitA4ToScreen();
       }
+      fitA4ToScreen();
     });
 
     // =========================================================================
-    // 6. PERSONALIZAÇÃO VISUAL (5 MODELOS, 12+ CORES, FONTES)
+    // 6. EDIÇÃO DE DADOS, FOTO, RESUMO & SEÇÕES DINÂMICAS
     // =========================================================================
-    const TEMPLATES = [
-      { id: 'modern', name: 'Moderno 2 Colunas', desc: 'Barra lateral esquerda colorida' },
-      { id: 'classic', name: 'Executivo Clássico', desc: 'Tradicional com linhas elegantes' },
-      { id: 'banner', name: 'Criativo & Banner', desc: 'Topo em destaque com faixa forte' },
-      { id: 'minimal', name: 'Minimalista Tech', desc: 'Limpo, arejado e moderno' },
-      { id: 'sidebarRight', name: 'Compacto Corporativo', desc: 'Barra lateral direita em tom suave' }
-    ];
-
-    const PALETTES = [
-      { name: 'Azul Corporativo', hex: '#1e40af', light: '#eff6ff' },
-      { name: 'Azul Marinho', hex: '#0f172a', light: '#f1f5f9' },
-      { name: 'Verde Esmeralda', hex: '#047857', light: '#ecfdf5' },
-      { name: 'Verde Floresta', hex: '#15803d', light: '#f0fdf4' },
-      { name: 'Bordô Executivo', hex: '#881337', light: '#fff1f2' },
-      { name: 'Vermelho Terracota', hex: '#b91c1c', light: '#fef2f2' },
-      { name: 'Roxo Inovação', hex: '#6d28d9', light: '#f5f3ff' },
-      { name: 'Índigo Moderno', hex: '#4338ca', light: '#eef2ff' },
-      { name: 'Grafite Elegante', hex: '#334155', light: '#f8fafc' },
-      { name: 'Dourado / Âmbar', hex: '#b45309', light: '#fffbeb' },
-      { name: 'Petróleo / Teal', hex: '#0f766e', light: '#f0fdfa' },
-      { name: 'Rosa Antigo / Malva', hex: '#9d174d', light: '#fdf2f8' }
-    ];
-
-    const FONTS = [
-      { id: 'Inter', label: 'Inter (Moderna)' },
-      { id: 'Merriweather', label: 'Serif Clássica' },
-      { id: 'Roboto', label: 'Roboto (Limpa)' }
-    ];
-
-    const SIZES = [
-      { id: 'compact', label: 'Compacto' },
-      { id: 'standard', label: 'Padrão' },
-      { id: 'comfortable', label: 'Confortável' }
-    ];
-
-    function hexToSoftBg(hex, alpha = 0.08) {
-      const clean = hex.replace('#', '');
-      const r = parseInt(clean.substring(0, 2), 16) || 30;
-      const g = parseInt(clean.substring(2, 4), 16) || 64;
-      const b = parseInt(clean.substring(4, 6), 16) || 175;
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    function updatePersonal(field, value) {
+      cvData.personal[field] = value;
+      renderCV();
+      refreshStepInspectionUI();
+      triggerAutoSave();
     }
 
-    function renderDesignControls() {
-      // 5 Templates
-      const tplContainer = document.getElementById('template-selector');
-      tplContainer.innerHTML = TEMPLATES.map(t => {
-        const active = cvData.settings.template === t.id;
-        return `
-          <button type="button" onclick="updateSetting('template', '${t.id}')" class="p-3 rounded-xl border-2 text-left transition ${active ? 'border-blue-600 bg-blue-50/80 dark:bg-blue-950/60 shadow-sm' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300'}">
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-xs font-bold text-slate-900 dark:text-white">${t.name}</span>
-              ${active ? '<span class="w-2 h-2 rounded-full bg-blue-600"></span>' : ''}
-            </div>
-            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${t.desc}</div>
-          </button>
-        `;
-      }).join('');
-
-      // 12+ Paletas + Seletor Livre
-      const colorContainer = document.getElementById('color-selector');
-      const colorNameLabel = document.getElementById('selected-color-name');
-      if (colorNameLabel) {
-        colorNameLabel.textContent = cvData.settings.colorName || cvData.settings.color.toUpperCase();
+    function handlePhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      if (file.size > 4 * 1024 * 1024) {
+        showToast('Escolha uma imagem de até 4 MB.', 'warning');
+        return;
       }
-
-      colorContainer.innerHTML = PALETTES.map(p => {
-        const active = cvData.settings.color.toLowerCase() === p.hex.toLowerCase();
-        return `
-          <button type="button" onclick="selectPalette('${p.hex}', '${p.light}', '${p.name}')" title="${p.name}" class="group flex flex-col items-center gap-1 p-1.5 rounded-xl border transition ${active ? 'border-blue-600 bg-white dark:bg-slate-900 shadow-sm' : 'border-transparent hover:bg-white/60 dark:hover:bg-slate-800'}">
-            <span class="w-7 h-7 rounded-full flex items-center justify-center shadow-inner transition transform group-hover:scale-105" style="background-color: ${p.hex}">
-              ${active ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
-            </span>
-            <span class="text-[9.5px] leading-tight text-center text-slate-600 dark:text-slate-300 line-clamp-1">${p.name.split(' ')[0]}</span>
-          </button>
-        `;
-      }).join('') + `
-        <label title="Escolher qualquer cor personalizada" class="flex flex-col items-center gap-1 p-1.5 rounded-xl border border-dashed border-slate-400 hover:border-blue-500 cursor-pointer relative">
-          <span class="w-7 h-7 rounded-full bg-gradient-to-tr from-rose-500 via-amber-400 to-blue-600 flex items-center justify-center text-white text-xs font-extrabold shadow-sm">+</span>
-          <span class="text-[9.5px] leading-tight text-slate-600 dark:text-slate-300">Livre</span>
-          <input type="color" value="${cvData.settings.color}" onchange="selectPalette(this.value, hexToSoftBg(this.value, 0.08), 'Cor Personalizada (' + this.value.toUpperCase() + ')')" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer" />
-        </label>
-      `;
-
-      // Fontes
-      document.getElementById('font-selector').innerHTML = FONTS.map(f => {
-        const active = cvData.settings.font === f.id;
-        return `
-          <button type="button" onclick="updateSetting('font', '${f.id}')" class="py-2 px-2 rounded-xl border text-xs font-medium transition ${active ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'}">
-            ${f.label}
-          </button>
-        `;
-      }).join('');
-
-      // Tamanhos
-      document.getElementById('size-selector').innerHTML = SIZES.map(s => {
-        const active = cvData.settings.size === s.id;
-        return `
-          <button type="button" onclick="updateSetting('size', '${s.id}')" class="py-2 px-2 rounded-xl border text-xs font-medium transition ${active ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'}">
-            ${s.label}
-          </button>
-        `;
-      }).join('');
-
-      document.getElementById('toggle-show-photo').checked = cvData.settings.showPhoto;
-    }
-
-    function selectPalette(hex, light, name) {
-      cvData.settings.color = hex;
-      cvData.settings.colorLight = light || hexToSoftBg(hex, 0.08);
-      cvData.settings.colorName = name || hex.toUpperCase();
-      applyCSSVariables();
-      renderDesignControls();
-      renderCV();
-      triggerAutoSave();
-    }
-
-    function updateSetting(key, val) {
-      cvData.settings[key] = val;
-      applyCSSVariables();
-      renderDesignControls();
-      renderCV();
-      triggerAutoSave();
-    }
-
-    function applyCSSVariables() {
-      const root = document.documentElement;
-      root.style.setProperty('--cv-primary', cvData.settings.color);
-      root.style.setProperty('--cv-primary-light', cvData.settings.colorLight || hexToSoftBg(cvData.settings.color, 0.08));
-      root.style.setProperty('--cv-primary-border', hexToSoftBg(cvData.settings.color, 0.28));
-      const fontMap = {
-        Inter: "'Inter', sans-serif",
-        Merriweather: "'Merriweather', serif",
-        Roboto: "'Roboto', sans-serif"
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          // Redimensionar para no máximo 480px para manter leve em localStorage e PDF
+          const maxSide = 480;
+          let { width, height } = img;
+          if (width > maxSide || height > maxSide) {
+            if (width > height) {
+              height = Math.round((height * maxSide) / width);
+              width = maxSide;
+            } else {
+              width = Math.round((width * maxSide) / height);
+              height = maxSide;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          cvData.personal.photo = canvas.toDataURL('image/jpeg', 0.85);
+          cvData.personal.photoPosY = 50;
+          cvData.settings.showPhoto = true;
+          syncPhotoUI();
+          renderDesignControls();
+          renderCV();
+          refreshStepInspectionUI();
+          triggerAutoSave();
+          showToast('Foto adicionada ao currículo!');
+        };
+        img.src = e.target.result;
       };
-      root.style.setProperty('--cv-font', fontMap[cvData.settings.font] || "'Inter', sans-serif");
-
-      const paper = document.getElementById('cv-paper');
-      paper.classList.remove('cv-size-compact', 'cv-size-standard', 'cv-size-comfortable');
-      paper.classList.add('cv-size-' + (cvData.settings.size || 'standard'));
+      reader.readAsDataURL(file);
+      event.target.value = '';
     }
+
+    function removePhoto() {
+      cvData.personal.photo = '';
+      cvData.personal.photoPosY = 50;
+      syncPhotoUI();
+      renderCV();
+      refreshStepInspectionUI();
+      triggerAutoSave();
+      showToast('Foto removida.', 'info');
+    }
+
+    function updatePhotoPosition(val) {
+      cvData.personal.photoPosY = Number(val);
+      const valLabel = document.getElementById('photo-pos-val');
+      if (valLabel) valLabel.textContent = `${val}%`;
+      renderCV();
+      triggerAutoSave();
+    }
+
+    function syncPhotoUI() {
+      const hasPhoto = Boolean(cvData.personal.photo);
+      const preview = document.getElementById('editor-photo-preview');
+      const placeholder = document.getElementById('editor-photo-placeholder');
+      const removeBtn = document.getElementById('btn-remove-photo');
+      const adjustBox = document.getElementById('photo-adjust-controls');
+      const slider = document.getElementById('photo-pos-slider');
+      const valLabel = document.getElementById('photo-pos-val');
+
+      const posY = cvData.personal.photoPosY ?? 50;
+      if (slider) slider.value = posY;
+      if (valLabel) valLabel.textContent = `${posY}%`;
+
+      if (hasPhoto) {
+        preview.src = cvData.personal.photo;
+        preview.style.objectPosition = `center ${posY}%`;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        removeBtn.classList.remove('hidden');
+        adjustBox.classList.remove('hidden');
+      } else {
+        preview.src = '';
+        preview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        removeBtn.classList.add('hidden');
+        adjustBox.classList.add('hidden');
+      }
+    }
+
     function updateSummary(val) {
       cvData.summary = val;
       document.getElementById('summary-char-count').textContent = `${val.length} caracteres`;
       renderCV();
+      refreshStepInspectionUI();
       triggerAutoSave();
     }
 
     function updateAdditionalInfo(val) {
       cvData.additionalInfo = val;
       renderCV();
+      refreshStepInspectionUI();
       triggerAutoSave();
     }
 
@@ -1442,7 +1397,7 @@
       const text = presets[type] || '';
       document.getElementById('field-summary').value = text;
       updateSummary(text);
-      showToast('Modelo de resumo inserido!', 'info');
+      showToast('Modelo de resumo aplicado!', 'info');
     }
 
     // --- EXPERIÊNCIAS ---
@@ -1465,27 +1420,27 @@
             </div>
           </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Cargo</label>
-              <input type="text" value="${escapeHTML(exp.role)}" oninput="updateArrayField('experiences', ${idx}, 'role', this.value); refreshStepInspectionUI();" placeholder="Ex: Analista Financeiro" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+              <input type="text" value="${escapeHTML(exp.role)}" oninput="updateArrayField('experiences', ${idx}, 'role', this.value)" placeholder="Ex: Analista Financeiro" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Empresa</label>
-              <input type="text" value="${escapeHTML(exp.company)}" oninput="updateArrayField('experiences', ${idx}, 'company', this.value); refreshStepInspectionUI();" placeholder="Ex: Empresa ABC Ltda" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+              <input type="text" value="${escapeHTML(exp.company)}" oninput="updateArrayField('experiences', ${idx}, 'company', this.value)" placeholder="Ex: Empresa ABC Ltda" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Cidade / Local</label>
-              <input type="text" value="${escapeHTML(exp.location)}" oninput="updateArrayField('experiences', ${idx}, 'location', this.value); refreshStepInspectionUI();" placeholder="Ex: São Paulo, SP ou Remoto" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+              <input type="text" value="${escapeHTML(exp.location)}" oninput="updateArrayField('experiences', ${idx}, 'location', this.value)" placeholder="Ex: São Paulo, SP ou Remoto" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
             </div>
             <div class="grid grid-cols-2 gap-1.5">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Início</label>
-                <input type="text" value="${escapeHTML(exp.startDate)}" oninput="updateArrayField('experiences', ${idx}, 'startDate', this.value); refreshStepInspectionUI();" placeholder="Jan 2022" class="w-full px-2 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+                <input type="text" value="${escapeHTML(exp.startDate)}" oninput="updateArrayField('experiences', ${idx}, 'startDate', this.value)" placeholder="Jan 2022" class="w-full px-2 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Fim</label>
-                <input type="text" value="${exp.current ? 'Atual' : escapeHTML(exp.endDate)}" ${exp.current ? 'disabled' : ''} oninput="updateArrayField('experiences', ${idx}, 'endDate', this.value); refreshStepInspectionUI();" placeholder="Dez 2024" class="w-full px-2 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500 disabled:opacity-50" />
+                <input type="text" value="${exp.current ? 'Atual' : escapeHTML(exp.endDate)}" ${exp.current ? 'disabled' : ''} oninput="updateArrayField('experiences', ${idx}, 'endDate', this.value)" placeholder="Dez 2024" class="w-full px-2 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500 disabled:opacity-50" />
               </div>
             </div>
           </div>
@@ -1496,8 +1451,8 @@
           </label>
 
           <div>
-            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Atividades e Conquistas (uma por linha para tópicos)</label>
-            <textarea rows="3" oninput="updateArrayField('experiences', ${idx}, 'description', this.value); refreshStepInspectionUI();" placeholder="• Descreva suas responsabilidades e resultados alcançados..." class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500 resize-y">${escapeHTML(exp.description)}</textarea>
+            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Atividades e Conquistas (uma linha por tópico)</label>
+            <textarea rows="3" oninput="updateArrayField('experiences', ${idx}, 'description', this.value)" placeholder="• Descreva suas responsabilidades e resultados alcançados..." class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500 resize-y">${escapeHTML(exp.description)}</textarea>
           </div>
         </div>
       `).join('');
@@ -1516,6 +1471,7 @@
       });
       renderExperienceEditor();
       renderCV();
+      refreshStepInspectionUI();
       triggerAutoSave();
     }
 
@@ -1550,19 +1506,19 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div class="sm:col-span-2">
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Curso / Grau</label>
-              <input type="text" value="${escapeHTML(edu.degree)}" oninput="updateArrayField('education', ${idx}, 'degree', this.value); refreshStepInspectionUI();" placeholder="Ex: Bacharelado em Ciência da Computação" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+              <input type="text" value="${escapeHTML(edu.degree)}" oninput="updateArrayField('education', ${idx}, 'degree', this.value)" placeholder="Ex: Bacharelado em Sistemas de Informação" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
             </div>
             <div class="sm:col-span-2">
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Instituição de Ensino</label>
-              <input type="text" value="${escapeHTML(edu.institution)}" oninput="updateArrayField('education', ${idx}, 'institution', this.value); refreshStepInspectionUI();" placeholder="Ex: USP / PUC Minas" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+              <input type="text" value="${escapeHTML(edu.institution)}" oninput="updateArrayField('education', ${idx}, 'institution', this.value)" placeholder="Ex: UFMG / PUC" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Período / Ano</label>
-              <input type="text" value="${escapeHTML(edu.period)}" oninput="updateArrayField('education', ${idx}, 'period', this.value); refreshStepInspectionUI();" placeholder="Ex: 2020 - 2024" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
+              <input type="text" value="${escapeHTML(edu.period)}" oninput="updateArrayField('education', ${idx}, 'period', this.value)" placeholder="Ex: 2020 - 2024" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500" />
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-0.5">Status</label>
-              <select onchange="updateArrayField('education', ${idx}, 'status', this.value); refreshStepInspectionUI();" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500">
+              <select onchange="updateArrayField('education', ${idx}, 'status', this.value)" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none focus:border-blue-500">
                 <option value="Concluído" ${edu.status === 'Concluído' ? 'selected' : ''}>Concluído</option>
                 <option value="Cursando" ${edu.status === 'Cursando' ? 'selected' : ''}>Cursando</option>
                 <option value="Trancado" ${edu.status === 'Trancado' ? 'selected' : ''}>Trancado</option>
@@ -1583,16 +1539,17 @@
       });
       renderEducationEditor();
       renderCV();
+      refreshStepInspectionUI();
       triggerAutoSave();
     }
 
-    // --- HABILIDADES (TAGS) ---
+    // --- HABILIDADES ---
     function renderSkillsEditor() {
       const container = document.getElementById('skills-tags-container');
       container.innerHTML = cvData.skills.map((sk, idx) => `
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-sm">
           <span>${escapeHTML(sk.name)}</span>
-          ${sk.level ? `<span class="text-[10px] px-1.5 py-0.2 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-semibold">${escapeHTML(sk.level)}</span>` : ''}
+          ${sk.level ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-semibold">${escapeHTML(sk.level)}</span>` : ''}
           <button type="button" onclick="removeItem('skills', ${idx})" class="text-slate-400 hover:text-rose-500 ml-0.5" title="Remover habilidade">×</button>
         </span>
       `).join('');
@@ -1620,8 +1577,9 @@
       const list = document.getElementById('languages-list');
       list.innerHTML = cvData.languages.map((lang, idx) => `
         <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
-          <input type="text" value="${escapeHTML(lang.name)}" oninput="updateArrayField('languages', ${idx}, 'name', this.value); refreshStepInspectionUI();" placeholder="Ex: Inglês" class="flex-1 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
-          <select onchange="updateArrayField('languages', ${idx}, 'level', this.value); refreshStepInspectionUI();" class="px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none">
+          <input type="text" value="${escapeHTML(lang.name)}" oninput="updateArrayField('languages', ${idx}, 'name', this.value)" placeholder="Ex: Inglês" class="flex-1 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
+          <select onchange="updateArrayField('languages', ${idx}, 'level', this.value)" class="px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none">
+            <option value="Básico" ${lang.level === 'Básico' ? 'selected' : ''}>Básico</option>
             <option value="Intermediário" ${lang.level === 'Intermediário' ? 'selected' : ''}>Intermediário</option>
             <option value="Avançado" ${lang.level === 'Avançado' ? 'selected' : ''}>Avançado</option>
             <option value="Fluente / Nativo" ${lang.level === 'Fluente / Nativo' ? 'selected' : ''}>Fluente / Nativo</option>
@@ -1635,6 +1593,7 @@
       cvData.languages.push({ id: uid('lang'), name: '', level: 'Intermediário' });
       renderLanguagesEditor();
       renderCV();
+      refreshStepInspectionUI();
       triggerAutoSave();
     }
 
@@ -1644,8 +1603,103 @@
       list.innerHTML = cvData.certifications.map((cert, idx) => `
         <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
           <div class="flex items-center justify-between gap-2">
-            <input type="text" value="${escapeHTML(cert.title)}" oninput="updateArrayField('certifications', ${idx}, 'title', this.value); refreshStepInspectionUI();" placeholder="Nome do Curso, Certificação ou Projeto" class="flex-1 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
+            <input type="text" value="${escapeHTML(cert.title)}" oninput="updateArrayField('certifications', ${idx}, 'title', this.value)" placeholder="Nome do Curso, Certificação ou Projeto" class="flex-1 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
             <button type="button" onclick="removeItem('certifications', ${idx})" class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg">×</button>
           </div>
           <div class="grid grid-cols-3 gap-2">
-            <input type="text" value="${escap
+            <input type="text" value="${escapeHTML(cert.issuer)}" oninput="updateArrayField('certifications', ${idx}, 'issuer', this.value)" placeholder="Instituição ou Link" class="col-span-2 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
+            <input type="text" value="${escapeHTML(cert.year)}" oninput="updateArrayField('certifications', ${idx}, 'year', this.value)" placeholder="Ano" class="px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 outline-none" />
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addCertification() {
+      cvData.certifications.push({ id: uid('cert'), title: '', issuer: '', year: '' });
+      renderCertificationsEditor();
+      renderCV();
+      refreshStepInspectionUI();
+      triggerAutoSave();
+    }
+
+    function updateArrayField(arrayName, idx, field, value) {
+      cvData[arrayName][idx][field] = value;
+      renderCV();
+      refreshStepInspectionUI();
+      triggerAutoSave();
+    }
+
+    function removeItem(arrayName, idx) {
+      cvData[arrayName].splice(idx, 1);
+      syncAllEditors();
+      renderCV();
+      refreshStepInspectionUI();
+      triggerAutoSave();
+    }
+
+    function moveItem(arrayName, idx, direction) {
+      const target = idx + direction;
+      if (target < 0 || target >= cvData[arrayName].length) return;
+      const arr = cvData[arrayName];
+      [arr[idx], arr[target]] = [arr[target], arr[idx]];
+      syncAllEditors();
+      renderCV();
+      triggerAutoSave();
+    }
+
+    // =========================================================================
+    // 7. CONTROLES DE DESIGN (5 MODELOS, 12 CORES + SELETOR LIVRE, FONTES)
+    // =========================================================================
+    function hexToSoftBg(hex, alpha = 0.08) {
+      const clean = String(hex || '#1e40af').replace('#', '');
+      const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean.padEnd(6, '0').slice(0, 6);
+      const r = parseInt(full.substring(0, 2), 16) || 30;
+      const g = parseInt(full.substring(2, 4), 16) || 64;
+      const b = parseInt(full.substring(4, 6), 16) || 175;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function renderDesignControls() {
+      const tplContainer = document.getElementById('template-selector');
+      if (tplContainer) {
+        tplContainer.innerHTML = TEMPLATES.map(t => {
+          const active = cvData.settings.template === t.id;
+          return `
+            <button type="button" onclick="updateSetting('template', '${t.id}')" class="p-3 rounded-xl border-2 text-left transition ${active ? 'border-blue-600 bg-blue-50/80 dark:bg-blue-950/60 shadow-sm' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300'}">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-xs font-bold text-slate-900 dark:text-white">${t.name}</span>
+                ${active ? '<span class="w-2 h-2 rounded-full bg-blue-600"></span>' : ''}
+              </div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${t.desc}</div>
+            </button>
+          `;
+        }).join('');
+      }
+
+      const colorContainer = document.getElementById('color-selector');
+      const colorNameLabel = document.getElementById('selected-color-name');
+      if (colorNameLabel) {
+        colorNameLabel.textContent = cvData.settings.colorName || cvData.settings.color.toUpperCase();
+      }
+
+      if (colorContainer) {
+        colorContainer.innerHTML = PALETTES.map(p => {
+          const active = cvData.settings.color.toLowerCase() === p.hex.toLowerCase();
+          return `
+            <button type="button" onclick="selectPalette('${p.hex}', '${p.light}', '${p.name}')" title="${p.name}" class="group flex flex-col items-center gap-1 p-1.5 rounded-xl border transition ${active ? 'border-blue-600 bg-white dark:bg-slate-900 shadow-sm' : 'border-transparent hover:bg-white/60 dark:hover:bg-slate-800'}">
+              <span class="w-7 h-7 rounded-full flex items-center justify-center shadow-inner transition transform group-hover:scale-105" style="background-color: ${p.hex}">
+                ${active ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
+              </span>
+              <span class="text-[9.5px] leading-tight text-center text-slate-600 dark:text-slate-300 line-clamp-1">${p.name.split(' ')[0]}</span>
+            </button>
+          `;
+        }).join('') + `
+          <label title="Escolher qualquer cor personalizada" class="flex flex-col items-center gap-1 p-1.5 rounded-xl border border-dashed border-slate-400 hover:border-blue-500 cursor-pointer relative">
+            <span class="w-7 h-7 rounded-full bg-gradient-to-tr from-rose-500 via-amber-400 to-blue-600 flex items-center justify-center text-white text-xs font-extrabold shadow-sm">+</span>
+            <span class="text-[9.5px] leading-tight text-slate-600 dark:text-slate-300">Livre</span>
+            <input type="color" value="${cvData.settings.color}" onchange="selectPalette(this.value, hexToSoftBg(this.value, 0.08), 'Cor Personalizada (' + this.value.toUpperCase() + ')')" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer" />
+          </label>
+        `;
+      }
+
+      const fontContainer 
