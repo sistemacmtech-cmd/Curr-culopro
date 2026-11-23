@@ -1,11 +1,16 @@
 ```html
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currículo Interativo PWA</title>
-
+    <title>Gerador de Currículo Profissional PWA</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="Crie, personalize e baixe seu currículo profissional em PDF de forma rápida, gratuita e offline.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>">
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,12 +20,11 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
                         }
                     }
                 }
@@ -28,145 +32,927 @@
         }
     </script>
     
-    <!-- FontAwesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- html2pdf.js para exportação perfeita de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        /* Estilos do Preview A4 */
+        .page-a4 {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 18mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            word-wrap: break-word;
         }
 
-        /* Estilos de Edição Inline */
-        [contenteditable="true"] {
-            outline: 2px dashed rgba(2, 132, 199, 0.5);
-            outline-offset: 3px;
-            border-radius: 4px;
-            min-width: 20px;
-        }
-        [contenteditable="true"]:focus {
-            outline: 2px solid #0284c7;
-            background-color: rgba(2, 132, 199, 0.08);
-        }
-
-        /* Otimizações de Impressão (A4 / PDF) */
+        /* Estilização para impressão */
         @media print {
-            .no-print {
-                display: none !important;
-            }
             body {
                 background: white !important;
                 color: black !important;
-                padding: 0 !important;
-                margin: 0 !important;
             }
-            .print-container {
-                box-shadow: none !important;
-                border: none !important;
-                max-width: 100% !important;
+            .no-print {
+                display: none !important;
+            }
+            .page-a4 {
                 width: 100% !important;
+                min-height: 100vh !important;
+                box-shadow: none !important;
                 padding: 0 !important;
                 margin: 0 !important;
             }
-            .print-grid {
-                display: grid !important;
-                grid-template-columns: 1fr 2fr !important;
-                gap: 1.5rem !important;
+            .preview-container {
+                padding: 0 !important;
+                background: transparent !important;
             }
-            .print-sidebar {
-                border-right: 1px solid #e2e8f0 !important;
-                padding-right: 1rem !important;
-                background-color: transparent !important;
-            }
-            .print-card {
-                background: white !important;
-                color: black !important;
-                border: 1px solid #e2e8f0 !important;
-            }
-            .text-brand-400, .text-brand-500 {
-                color: #0284c7 !important;
-            }
-            .bg-slate-900, .bg-slate-800, .bg-slate-800\/60 {
-                background-color: transparent !important;
-                color: black !important;
-            }
-            .text-white, .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400 {
-                color: #1e293b !important;
-            }
-            [contenteditable="true"] {
-                outline: none !important;
-            }
-            @page {
-                size: A4 portrait;
-                margin: 1.5cm;
-            }
+        }
+
+        /* Scrollbar customizada para o formulário */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animações simples */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen transition-colors duration-300 pb-16">
+<body class="bg-slate-100 text-slate-800 antialiased font-['Inter'] min-h-screen flex flex-col">
 
-    <!-- BARRA NAVEGAÇÃO & AÇÕES (no-print) -->
-    <header class="no-print sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800 px-4 py-3 mb-6 shadow-sm">
-        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3">
+    <!-- CABEÇALHO DA APLICAÇÃO -->
+    <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20">
-                    <i class="fa-solid fa-file-invoice"></i>
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <i data-lucide="file-text" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-base leading-tight text-white">Currículo <span class="text-brand-500">PWA</span></h1>
-                    <p class="text-[11px] text-slate-400">Edição Dinâmica & Impressão PDF</p>
+                    <h1 class="font-bold text-lg leading-none">CV Builder PWA</h1>
+                    <span class="text-xs text-slate-400">Gerador Profissional de Currículo</span>
                 </div>
             </div>
 
-            <!-- Botões de Controle -->
-            <div class="flex items-center flex-wrap gap-2">
-                <!-- Modo Edição -->
-                <button id="btn-edit-mode" onclick="toggleEditMode()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all border border-slate-700">
-                    <i class="fa-solid fa-pen-to-square text-brand-500"></i>
-                    <span id="edit-mode-label">Modo Edição: OFF</span>
-                </button>
-
-                <!-- Salvar -->
-                <button onclick="saveData()" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shadow-md shadow-brand-600/30">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    <span>Salvar</span>
-                </button>
-
-                <!-- Imprimir / Salvar PDF -->
-                <button onclick="window.print()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shadow-md shadow-emerald-600/30">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span>Salvar PDF</span>
-                </button>
-
-                <!-- Restaurar Padrões -->
-                <button onclick="resetData()" class="flex items-center justify-center bg-slate-800 hover:bg-rose-950/40 hover:text-rose-400 text-slate-400 p-2.5 rounded-xl transition-all border border-slate-700" title="Restaurar dados padrão">
-                    <i class="fa-solid fa-rotate-left"></i>
-                </button>
-
-                <!-- Alternar Tema -->
-                <button onclick="toggleTheme()" class="flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-amber-400 p-2.5 rounded-xl transition-all border border-slate-700" title="Alternar Tema Claro/Escuro">
-                    <i id="theme-icon" class="fa-solid fa-sun"></i>
-                </button>
-
-                <!-- Instalar App PWA -->
-                <button id="btn-install" onclick="installPWA()" class="hidden flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shadow-md shadow-purple-600/30">
-                    <i class="fa-solid fa-download"></i>
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <!-- Status PWA / Install Button -->
+                <button id="pwa-install-btn" class="hidden text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+                    <i data-lucide="download-cloud" class="w-4 h-4"></i>
                     <span>Instalar App</span>
+                </button>
+
+                <!-- Botões de Ação de Dados -->
+                <div class="flex items-center space-x-1 bg-slate-800 p-1 rounded-lg">
+                    <button onclick="saveData()" title="Salvar dados localmente" class="p-2 hover:bg-slate-700 rounded text-slate-300 hover:text-white transition flex items-center gap-1 text-xs">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span class="hidden md:inline">Salvar</span>
+                    </button>
+                    <button onclick="clearData()" title="Limpar formulário" class="p-2 hover:bg-red-900/50 hover:text-red-300 rounded text-slate-300 transition flex items-center gap-1 text-xs">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span class="hidden md:inline">Limpar</span>
+                    </button>
+                </div>
+
+                <!-- Exportar PDF -->
+                <button onclick="exportPDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm transition transform active:scale-95">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar PDF</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- CONTAINER DO CURRÍCULO -->
-    <main class="max-w-5xl mx-auto px-4 print-container">
-        <div id="resume-container" class="bg-slate-800/50 backdrop-blur-md border border-slate-700/60 rounded-3xl p-6 sm:p-10 shadow-2xl print-grid grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- NOTIFICAÇÃO TOAST DA APLICAÇÃO -->
+    <div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-2 pointer-events-none">
+        <i id="toast-icon" data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+        <span id="toast-msg" class="text-sm">Operação realizada com sucesso!</span>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL (DASHBOARD DIVIDIDO) -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
+        
+        <!-- PAINEL ESQUERDO: FORMULÁRIO DE PREENCHIMENTO -->
+        <section class="w-full lg:w-1/2 flex flex-col gap-6 no-print">
             
-            <!-- PAINEL LATERAL (FOTO, CONTATOS, SKILLS, IDIOMAS) -->
-            <aside class="md:col-span-1 space-y-6 print-sidebar border-b md:border-b-0 md:border-r border-slate-700/60 pb-6 md:pb-0 md:pr-6">
-                <!-- Foto e Avatar Upload -->
-                <div class="text-center md:text-left relative group">
-                    <div class="relative w-36 h-36 mx-auto md:mx-0 mb-4">
-                        <
+            <!-- CONTROLES DE TEMPLATE E COR DE DESTAQUE -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
+                    <i data-lucide="palette" class="w-4 h-4 text-blue-600"></i> Estilo e Personalização
+                </h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Seleção de Template -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Modelo Visual</label>
+                        <select id="template-select" onchange="updatePreview()" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="modern">Moderno (Sidebar Esquerda)</option>
+                            <option value="classic">Clássico (Elegante & Centrado)</option>
+                            <option value="minimal">Minimalista (Limpo & Direto)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Seleção de Cor Primary -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Cor Principal</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" id="primary-color" value="#2563eb" onchange="updatePreview()" class="h-10 w-14 border border-slate-300 rounded-lg cursor-pointer bg-white p-1">
+                            <span class="text-xs text-slate-500">Escolha a cor de destaque do PDF</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACORDEÃO / SEÇÕES DE PREENCHIMENTO -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex-1">
+                
+                <!-- Navegação de Abas/Etapas -->
+                <div class="flex border-b border-slate-200 overflow-x-auto bg-slate-50/50 p-1 gap-1" id="tab-buttons">
+                    <button onclick="switchTab('tab-pessoal')" id="btn-tab-pessoal" class="tab-btn px-3 py-2 text-xs font-medium rounded-lg whitespace-nowrap bg-white text-blue-600 shadow-sm">Pessoais & Foto</button>
+                    <button onclick="switchTab('tab-resumo')" id="btn-tab-resumo" class="tab-btn px-3 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 whitespace-nowrap">Resumo</button>
+                    <button onclick="switchTab('tab-experiencia')" id="btn-tab-experiencia" class="tab-btn px-3 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 whitespace-nowrap">Experiência</button>
+                    <button onclick="switchTab('tab-formacao')" id="btn-tab-formacao" class="tab-btn px-3 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 whitespace-nowrap">Formação</button>
+                    <button onclick="switchTab('tab-habilidades')" id="btn-tab-habilidades" class="tab-btn px-3 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 whitespace-nowrap">Habilidades & Idiomas</button>
+                </div>
+
+                <div class="p-5">
+                    <!-- 1. DADOS PESSOAIS & FOTO -->
+                    <div id="tab-pessoal" class="tab-content space-y-4">
+                        <h3 class="font-semibold text-slate-800 text-sm border-b pb-2">Foto de Perfil (Opcional)</h3>
+                        
+                        <!-- Upload e Controles de Foto -->
+                        <div class="bg-slate-50 p-4 border border-slate-200 rounded-lg flex flex-col sm:flex-row items-center gap-4">
+                            <div class="relative w-20 h-20 rounded-full bg-slate-200 border-2 border-slate-300 flex items-center justify-center overflow-hidden flex-shrink-0" id="photo-preview-container">
+                                <img id="photo-preview" src="" class="w-full h-full object-cover hidden" alt="Foto de Perfil">
+                                <i id="photo-placeholder-icon" data-lucide="user" class="w-8 h-8 text-slate-400"></i>
+                            </div>
+                            
+                            <div class="flex-1 space-y-2 text-center sm:text-left">
+                                <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                                    <label class="cursor-pointer bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition">
+                                        <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                                        <span>Carregar Foto</span>
+                                        <input type="file" id="input-foto" accept="image/*" onchange="handlePhotoUpload(event)" class="hidden">
+                                    </label>
+                                    <button onclick="removePhoto()" id="btn-remove-photo" class="hidden bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        <span>Remover</span>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                                    <input type="checkbox" id="check-exibir-foto" checked onchange="toggleExibirFoto()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer">
+                                    <label for="check-exibir-foto" class="text-xs font-medium text-slate-700 cursor-pointer">Exibir foto no currículo</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="font-semibold text-slate-800 text-sm border-b pb-2 pt-2">Informações de Contato</h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Nome Completo *</label>
+                                <input type="text" id="input-nome" oninput="updatePreview()" placeholder="Ex: Maria Silva" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Cargo / Profissão *</label>
+                                <input type="text" id="input-cargo" oninput="updatePreview()" placeholder="Ex: Desenvolvedora Full Stack" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">E-mail *</label>
+                                <input type="email" id="input-email" oninput="updatePreview()" placeholder="maria.silva@email.com" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Telefone / WhatsApp *</label>
+                                <input type="text" id="input-telefone" oninput="updatePreview()" placeholder="(11) 98765-4321" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Cidade / Estado *</label>
+                                <input type="text" id="input-localizacao" oninput="updatePreview()" placeholder="São Paulo, SP" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">LinkedIn</label>
+                                <input type="text" id="input-linkedin" oninput="updatePreview()" placeholder="linkedin.com/in/mariasilva" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-slate-600 mb-1">GitHub / Portfólio / Site</label>
+                                <input type="text" id="input-github" oninput="updatePreview()" placeholder="github.com/mariasilva" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. RESUMO PROFISSIONAL -->
+                    <div id="tab-resumo" class="tab-content space-y-4 hidden">
+                        <h3 class="font-semibold text-slate-800 text-sm border-b pb-2">Sobre Você</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Resumo Executivo / Perfil</label>
+                            <textarea id="input-resumo" oninput="updatePreview()" rows="6" placeholder="Escreva um breve resumo de sua trajetória, principais realizações e objetivos profissionais..." class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                            <p class="text-xs text-slate-400 mt-1">Dica: Seja conciso (3 a 5 linhas). Foque em resultados e especialidades.</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. EXPERIÊNCIA PROFISSIONAL -->
+                    <div id="tab-experiencia" class="tab-content space-y-4 hidden">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h3 class="font-semibold text-slate-800 text-sm">Histórico Profissional</h3>
+                            <button onclick="addExperience()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Experiência
+                            </button>
+                        </div>
+
+                        <div id="experience-list" class="space-y-4">
+                            <!-- Itens adicionados dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- 4. FORMAÇÃO ACADÊMICA -->
+                    <div id="tab-formacao" class="tab-content space-y-4 hidden">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <h3 class="font-semibold text-slate-800 text-sm">Educação e Cursos</h3>
+                            <button onclick="addEducation()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Formação
+                            </button>
+                        </div>
+
+                        <div id="education-list" class="space-y-4">
+                            <!-- Itens adicionados dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- 5. HABILIDADES E IDIOMAS -->
+                    <div id="tab-habilidades" class="tab-content space-y-4 hidden">
+                        <h3 class="font-semibold text-slate-800 text-sm border-b pb-2">Competências & Idiomas</h3>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Habilidades / Competências Técnicas</label>
+                            <input type="text" id="input-habilidades" oninput="updatePreview()" placeholder="Ex: JavaScript, Gestão de Projetos, Figma, Python (Separe por vírgula)" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <p class="text-xs text-slate-400 mt-1">Separe cada habilidade por vírgula para formatação visual em tags.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Idiomas</label>
+                            <input type="text" id="input-idiomas" oninput="updatePreview()" placeholder="Ex: Português (Nativo), Inglês (Avançado), Espanhol (Intermediário)" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <p class="text-xs text-slate-400 mt-1">Separe cada idioma por vírgula.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- PAINEL DIREITO: LIVE PREVIEW (DOCUMENTO A4) -->
+        <section class="w-full lg:w-1/2 flex flex-col items-center">
+            
+            <div class="w-full flex items-center justify-between mb-3 no-print">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                    <i data-lucide="eye" class="w-4 h-4 text-emerald-600"></i> Pré-visualização A4 (Tempo Real)
+                </span>
+                <span class="text-xs text-slate-400">Escala visual reduzida para o navegador</span>
+            </div>
+
+            <!-- CONTAINER CONTAINER SCROLL E ESCALA DE PREVIEW -->
+            <div class="w-full bg-slate-200/70 p-2 sm:p-4 rounded-xl border border-slate-300 overflow-x-auto flex justify-center preview-container min-h-[600px]">
+                
+                <!-- FOLHA A4 PARA PREVIEW E EXPORTAÇÃO -->
+                <div id="cv-preview-area" class="page-a4 text-slate-800">
+                    <!-- O conteúdo do template será renderizado dinamicamente aqui -->
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER DA APLICAÇÃO -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            Gerador de Currículos PWA &copy; <span id="year-span"></span>. Todos os dados permanecem salvos no seu próprio navegador.
+        </div>
+    </footer>
+
+    <!-- LOGICA JAVASCRIPT INTEGRADA DA APLICAÇÃO -->
+    <script>
+        // Set ano atual no footer
+        document.getElementById('year-span').textContent = new Date().getFullYear();
+
+        // 1. ESTADO DOS DADOS DO CURRÍCULO
+        let cvData = {
+            foto: '',
+            exibirFoto: true,
+            nome: 'Ana Clara Souza',
+            cargo: 'Engenheira de Software Senior',
+            email: 'ana.souza@exemplo.com.br',
+            telefone: '(11) 98765-4321',
+            localizacao: 'São Paulo, SP',
+            linkedin: 'linkedin.com/in/anaclarasouza',
+            github: 'github.com/anaclarasouza',
+            resumo: 'Engenheira de Software com mais de 6 anos de experiência em desenvolvimento full stack, liderança técnica de equipes multidisciplinares e arquitetura de sistemas distribuídos na nuvem. Apaixonada por criar código limpo e escalar produtos de alto impacto.',
+            habilidades: 'JavaScript, TypeScript, React, Node.js, Python, AWS, Docker, Arquitetura Microserviços, Metodologias Ágeis',
+            idiomas: 'Português (Nativo), Inglês (Fluente)',
+            experiencias: [
+                {
+                    id: 1,
+                    empresa: 'Tech Solutions Brasil',
+                    cargo: 'Engenheira de Software Senior',
+                    periodo: '2022 - Atual',
+                    descricao: 'Liderança no desenvolvimento de microserviços de alto desempenho utilizando Node.js e React. Otimização de consultas banco de dados resultando em redução de 35% na latência.'
+                },
+                {
+                    id: 2,
+                    empresa: 'Inovação Digital Co.',
+                    cargo: 'Desenvolvedora Full Stack Mid',
+                    periodo: '2019 - 2022',
+                    descricao: 'Desenvolvimento de aplicações web responsivas, integração de APIs RESTful e implementação de pipelines CI/CD com GitHub Actions.'
+                }
+            ],
+            formacoes: [
+                {
+                    id: 1,
+                    instituicao: 'Universidade de São Paulo (USP)',
+                    curso: 'Bacharelado em Ciência da Computação',
+                    periodo: '2015 - 2019'
+                }
+            ]
+        };
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 2. INICIALIZAÇÃO DA APLICAÇÃO E EVENTOS
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedData();
+            initFormValues();
+            updatePhotoUI();
+            renderExperienceList();
+            renderEducationList();
+            updatePreview();
+            setupPWA();
+        });
+
+        // 3. NAVEGAÇÃO DE ABAS DO FORMULÁRIO
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+                btn.classList.add('text-slate-600');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+            activeBtn.classList.remove('text-slate-600');
+        }
+
+        // 4. ALIMENTAR FORMULÁRIO COM DADOS DO ESTADO
+        function initFormValues() {
+            document.getElementById('input-nome').value = cvData.nome || '';
+            document.getElementById('input-cargo').value = cvData.cargo || '';
+            document.getElementById('input-email').value = cvData.email || '';
+            document.getElementById('input-telefone').value = cvData.telefone || '';
+            document.getElementById('input-localizacao').value = cvData.localizacao || '';
+            document.getElementById('input-linkedin').value = cvData.linkedin || '';
+            document.getElementById('input-github').value = cvData.github || '';
+            document.getElementById('input-resumo').value = cvData.resumo || '';
+            document.getElementById('input-habilidades').value = cvData.habilidades || '';
+            document.getElementById('input-idiomas').value = cvData.idiomas || '';
+            document.getElementById('check-exibir-foto').checked = cvData.exibirFoto !== undefined ? cvData.exibirFoto : true;
+        }
+
+        // 4.1 GERENCIAMENTO DE UPLOAD E CONTROLE DA FOTO
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('A imagem deve ter no máximo 5MB.', 'info');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    cvData.foto = e.target.result;
+                    cvData.exibirFoto = true;
+                    document.getElementById('check-exibir-foto').checked = true;
+                    updatePhotoUI();
+                    updatePreview();
+                    showToast('Foto adicionada com sucesso!', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removePhoto() {
+            cvData.foto = '';
+            document.getElementById('input-foto').value = '';
+            updatePhotoUI();
+            updatePreview();
+            showToast('Foto removida.', 'info');
+        }
+
+        function toggleExibirFoto() {
+            cvData.exibirFoto = document.getElementById('check-exibir-foto').checked;
+            updatePreview();
+        }
+
+        function updatePhotoUI() {
+            const previewImg = document.getElementById('photo-preview');
+            const placeholderIcon = document.getElementById('photo-placeholder-icon');
+            const btnRemove = document.getElementById('btn-remove-photo');
+
+            if (cvData.foto) {
+                previewImg.src = cvData.foto;
+                previewImg.classList.remove('hidden');
+                placeholderIcon.classList.add('hidden');
+                btnRemove.classList.remove('hidden');
+            } else {
+                previewImg.src = '';
+                previewImg.classList.add('hidden');
+                placeholderIcon.classList.remove('hidden');
+                btnRemove.classList.add('hidden');
+            }
+        }
+
+        // 5. OBTER DADOS ATUALIZADOS DO FORMULÁRIO
+        function collectFormData() {
+            cvData.nome = document.getElementById('input-nome').value;
+            cvData.cargo = document.getElementById('input-cargo').value;
+            cvData.email = document.getElementById('input-email').value;
+            cvData.telefone = document.getElementById('input-telefone').value;
+            cvData.localizacao = document.getElementById('input-localizacao').value;
+            cvData.linkedin = document.getElementById('input-linkedin').value;
+            cvData.github = document.getElementById('input-github').value;
+            cvData.resumo = document.getElementById('input-resumo').value;
+            cvData.habilidades = document.getElementById('input-habilidades').value;
+            cvData.idiomas = document.getElementById('input-idiomas').value;
+            cvData.exibirFoto = document.getElementById('check-exibir-foto').checked;
+        }
+
+        // 5. OBTER DADOS ATUALIZADOS DO FORMULÁRIO
+        // TEMPLATE 1: MODERNO (Sidebar Esquerda com Foto)
+        function renderModernTemplate(color, habilidades, idiomas) {
+            const hasPhoto = cvData.foto && cvData.exibirFoto;
+            return `
+                <div class="flex flex-col md:flex-row h-full gap-6 text-slate-800 font-sans" style="min-height: 100%;">
+                    <!-- Sidebar Esquerda -->
+                    <div class="w-full md:w-1/3 space-y-6 pr-4 border-r border-slate-200" style="border-color: ${color}33;">
+                        
+                        ${hasPhoto ? `
+                        <div class="flex justify-center md:justify-start">
+                            <div class="w-28 h-28 rounded-xl overflow-hidden border-2 shadow-sm" style="border-color: ${color};">
+                                <img src="${cvData.foto}" class="w-full h-full object-cover" alt="Foto">
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div>
+                            <h1 class="text-2xl font-bold tracking-tight text-slate-900 leading-tight">${cvData.nome || 'Seu Nome'}</h1>
+                            <p class="text-sm font-semibold mt-1" style="color: ${color};">${cvData.cargo || 'Seu Cargo'}</p>
+                        </div>
+
+                        <!-- Contato -->
+                        <div class="space-y-2 text-xs text-slate-600">
+                            <h2 class="font-bold uppercase tracking-wider text-[10px] text-slate-400 border-b pb-1">Contato</h2>
+                            ${cvData.email ? `<p class="flex items-center gap-1.5"><i data-lucide="mail" class="w-3.5 h-3.5"></i> ${cvData.email}</p>` : ''}
+                            ${cvData.telefone ? `<p class="flex items-center gap-1.5"><i data-lucide="phone" class="w-3.5 h-3.5"></i> ${cvData.telefone}</p>` : ''}
+                            ${cvData.localizacao ? `<p class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${cvData.localizacao}</p>` : ''}
+                            ${cvData.linkedin ? `<p class="flex items-center gap-1.5 break-all"><i data-lucide="linkedin" class="w-3.5 h-3.5"></i> ${cvData.linkedin}</p>` : ''}
+                            ${cvData.github ? `<p class="flex items-center gap-1.5 break-all"><i data-lucide="globe" class="w-3.5 h-3.5"></i> ${cvData.github}</p>` : ''}
+                        </div>
+
+                        <!-- Habilidades -->
+                        ${habilidades.length > 0 ? `
+                        <div class="space-y-2">
+                            <h2 class="font-bold uppercase tracking-wider text-[10px] text-slate-400 border-b pb-1">Competências</h2>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${habilidades.map(h => `<span class="text-[11px] px-2 py-0.5 rounded text-white font-medium" style="background-color: ${color};">${h}</span>`).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <!-- Idiomas -->
+                        ${idiomas.length > 0 ? `
+                        <div class="space-y-2">
+                            <h2 class="font-bold uppercase tracking-wider text-[10px] text-slate-400 border-b pb-1">Idiomas</h2>
+                            <ul class="text-xs space-y-1 text-slate-600">
+                                ${idiomas.map(i => `<li class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background-color: ${color};"></span> ${i}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Conteúdo Principal Direito -->
+                    <div class="w-full md:w-2/3 space-y-6">
+                        <!-- Resumo -->
+                        ${cvData.resumo ? `
+                        <div class="space-y-1.5">
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 pb-1" style="border-color: ${color};">Perfil Profissional</h2>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">${cvData.resumo}</p>
+                        </div>
+                        ` : ''}
+
+                        <!-- Experiência -->
+                        ${cvData.experiencias.length > 0 ? `
+                        <div class="space-y-3">
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 pb-1" style="border-color: ${color};">Experiência Profissional</h2>
+                            <div class="space-y-4">
+                                ${cvData.experiencias.map(exp => `
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-xs font-bold text-slate-800">${exp.cargo || 'Cargo'}</h3>
+                                            <span class="text-[10px] font-medium text-slate-500">${exp.periodo || ''}</span>
+                                        </div>
+                                        <p class="text-[11px] font-semibold" style="color: ${color};">${exp.empresa || 'Empresa'}</p>
+                                        <p class="text-xs text-slate-600 leading-normal">${exp.descricao || ''}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <!-- Formação -->
+                        ${cvData.formacoes.length > 0 ? `
+                        <div class="space-y-3">
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 pb-1" style="border-color: ${color};">Formação Acadêmica</h2>
+                            <div class="space-y-3">
+                                ${cvData.formacoes.map(edu => `
+                                    <div>
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-xs font-bold text-slate-800">${edu.curso || 'Curso'}</h3>
+                                            <span class="text-[10px] font-medium text-slate-500">${edu.periodo || ''}</span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-600">${edu.instituicao || 'Instituição'}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // TEMPLATE 2: CLÁSSICO (Centrado & Foto Circular)
+        function renderClassicTemplate(color, habilidades, idiomas) {
+            const hasPhoto = cvData.foto && cvData.exibirFoto;
+            return `
+                <div class="space-y-6 text-slate-800 font-serif">
+                    <!-- Cabeçalho Centrado -->
+                    <div class="text-center border-b pb-4 flex flex-col items-center" style="border-color: ${color};">
+                        
+                        ${hasPhoto ? `
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-2 mb-3 shadow-sm" style="border-color: ${color};">
+                            <img src="${cvData.foto}" class="w-full h-full object-cover" alt="Foto">
+                        </div>
+                        ` : ''}
+
+                        <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-1" style="color: ${color};">${cvData.nome || 'Seu Nome'}</h1>
+                        <p class="text-sm italic font-sans text-slate-600 mb-2">${cvData.cargo || 'Seu Cargo'}</p>
+                        
+                        <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs font-sans text-slate-500">
+                            ${cvData.email ? `<span>${cvData.email}</span>` : ''}
+                            ${cvData.telefone ? `<span>• ${cvData.telefone}</span>` : ''}
+                            ${cvData.localizacao ? `<span>• ${cvData.localizacao}</span>` : ''}
+                            ${cvData.linkedin ? `<span>• ${cvData.linkedin}</span>` : ''}
+                            ${cvData.github ? `<span>• ${cvData.github}</span>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Resumo -->
+                    ${cvData.resumo ? `
+                    <div class="space-y-2">
+                        <h2 class="text-xs font-bold font-sans uppercase tracking-wider text-slate-900 border-b pb-1" style="border-color: ${color}55;">Resumo Executivo</h2>
+                        <p class="text-xs leading-relaxed text-slate-700 text-justify font-sans">${cvData.resumo}</p>
+                    </div>
+                    ` : ''}
+
+                    <!-- Experiência -->
+                    ${cvData.experiencias.length > 0 ? `
+                    <div class="space-y-3">
+                        <h2 class="text-xs font-bold font-sans uppercase tracking-wider text-slate-900 border-b pb-1" style="border-color: ${color}55;">Experiência Profissional</h2>
+                        <div class="space-y-4">
+                            ${cvData.experiencias.map(exp => `
+                                <div class="space-y-1 font-sans">
+                                    <div class="flex justify-between items-baseline">
+                                        <h3 class="text-xs font-bold text-slate-900">${exp.empresa || 'Empresa'}</h3>
+                                        <span class="text-[11px] italic text-slate-500">${exp.periodo || ''}</span>
+                                    </div>
+                                    <p class="text-xs font-medium italic" style="color: ${color};">${exp.cargo || 'Cargo'}</p>
+                                    <p class="text-xs text-slate-700 leading-relaxed">${exp.descricao || ''}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Formação -->
+                    ${cvData.formacoes.length > 0 ? `
+                    <div class="space-y-3">
+                        <h2 class="text-xs font-bold font-sans uppercase tracking-wider text-slate-900 border-b pb-1" style="border-color: ${color}55;">Formação Acadêmica</h2>
+                        <div class="space-y-3 font-sans">
+                            ${cvData.formacoes.map(edu => `
+                                <div class="flex justify-between items-baseline">
+                                    <div>
+                                        <h3 class="text-xs font-bold text-slate-900">${edu.curso || 'Curso'}</h3>
+                                        <p class="text-xs text-slate-600">${edu.instituicao || 'Instituição'}</p>
+                                    </div>
+                                    <span class="text-[11px] italic text-slate-500">${edu.periodo || ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Habilidades & Idiomas -->
+                    ${(habilidades.length > 0 || idiomas.length > 0) ? `
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200 font-sans">
+                        ${habilidades.length > 0 ? `
+                        <div>
+                            <h2 class="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-1">Competências</h2>
+                            <p class="text-xs text-slate-700 leading-normal">${habilidades.join(' • ')}</p>
+                        </div>
+                        ` : ''}
+
+                        ${idiomas.length > 0 ? `
+                        <div>
+                            <h2 class="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-1">Idiomas</h2>
+                            <p class="text-xs text-slate-700 leading-normal">${idiomas.join(' • ')}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // TEMPLATE 3: MINIMALISTA (Clean com Foto Direita)
+        function renderMinimalTemplate(color, habilidades, idiomas) {
+            const hasPhoto = cvData.foto && cvData.exibirFoto;
+            return `
+                <div class="space-y-6 text-slate-800 font-sans">
+                    <!-- Topo Minimalista -->
+                    <div class="flex justify-between items-center border-b pb-4" style="border-color: ${color};">
+                        <div class="flex items-center gap-4">
+                            ${hasPhoto ? `
+                            <div class="w-16 h-16 rounded-lg overflow-hidden border border-slate-200 shadow-sm flex-shrink-0">
+                                <img src="${cvData.foto}" class="w-full h-full object-cover" alt="Foto">
+                            </div>
+                            ` : ''}
+                            <div>
+                                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">${cvData.nome || 'Seu Nome'}</h1>
+                                <p class="text-xs font-medium text-slate-500 uppercase tracking-widest mt-0.5">${cvData.cargo || 'Seu Cargo'}</p>
+                            </div>
+                        </div>
+                        <div class="text-right text-[11px] text-slate-500 space-y-0.5">
+                            ${cvData.email ? `<div>${cvData.email}</div>` : ''}
+                            ${cvData.telefone ? `<div>${cvData.telefone}</div>` : ''}
+                            ${cvData.localizacao ? `<div>${cvData.localizacao}</div>` : ''}
+                            ${cvData.linkedin ? `<div>${cvData.linkedin}</div>` : ''}
+                            ${cvData.github ? `<div>${cvData.github}</div>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Resumo -->
+                    ${cvData.resumo ? `
+                    <div>
+                        <p class="text-xs leading-relaxed text-slate-600">${cvData.resumo}</p>
+                    </div>
+                    ` : ''}
+
+                    <!-- Experiência -->
+                    ${cvData.experiencias.length > 0 ? `
+                    <div class="space-y-4">
+                        <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Experiência</h2>
+                        <div class="space-y-4">
+                            ${cvData.experiencias.map(exp => `
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">${exp.periodo || ''}</div>
+                                    <div class="col-span-3 space-y-1">
+                                        <h3 class="text-xs font-bold text-slate-900">${exp.cargo || 'Cargo'} <span class="font-normal text-slate-500">em ${exp.empresa || 'Empresa'}</span></h3>
+                                        <p class="text-xs text-slate-600 leading-normal">${exp.descricao || ''}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Formação -->
+                    ${cvData.formacoes.length > 0 ? `
+                    <div class="space-y-3 pt-2">
+                        <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Educação</h2>
+                        <div class="space-y-3">
+                            ${cvData.formacoes.map(edu => `
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">${edu.periodo || ''}</div>
+                                    <div class="col-span-3">
+                                        <h3 class="text-xs font-bold text-slate-900">${edu.curso || 'Curso'}</h3>
+                                        <p class="text-xs text-slate-500">${edu.instituicao || 'Instituição'}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Habilidades & Idiomas -->
+                    ${(habilidades.length > 0 || idiomas.length > 0) ? `
+                    <div class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
+                        ${habilidades.length > 0 ? `
+                        <div>
+                            <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Habilidades</h2>
+                            <p class="text-xs text-slate-600">${habilidades.join(', ')}</p>
+                        </div>
+                        ` : ''}
+                        ${idiomas.length > 0 ? `
+                        <div>
+                            <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Idiomas</h2>
+                            <p class="text-xs text-slate-600">${idiomas.join(', ')}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // 9. GERENCIAMENTO DE PERSISTÊNCIA LOCAL (LOCALSTORAGE)
+        function saveData() {
+            collectFormData();
+            localStorage.setItem('cv_pwa_data', JSON.stringify(cvData));
+            showToast('Dados salvos no navegador com sucesso!', 'success');
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('cv_pwa_data');
+            if (saved) {
+                try {
+                    cvData = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Erro ao ler localStorage', e);
+                }
+            }
+        }
+
+        function clearData() {
+            if (window.confirm('Tem certeza de que deseja limpar todos os dados do formulário?')) {
+                localStorage.removeItem('cv_pwa_data');
+                cvData = {
+                    nome: '', cargo: '', email: '', telefone: '', localizacao: '',
+                    linkedin: '', resumo: '', habilidades: '', idiomas: '',
+                    experiencias: [], formacoes: []
+                };
+                initFormValues();
+                renderExperienceList();
+                renderEducationList();
+                updatePreview();
+                showToast('Formulário limpo com sucesso.', 'info');
+            }
+        }
+
+        // 10. EXPORTAÇÃO DE PDF DE ALTA QUALIDADE
+        function exportPDF() {
+            showToast('Gerando seu PDF profissional...', 'info');
+            const element = document.getElementById('cv-preview-area');
+            const opt = {
+                margin:       0,
+                filename:     `Curriculo_${(cvData.nome || 'Profissional').replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast('Download do PDF concluído!', 'success');
+            }).catch(err => {
+                console.error(err);
+                // Fallback de impressão em caso de falha de biblioteca externa
+                window.print();
+            });
+        }
+
+        // 11. EXIBIÇÃO DE TOAST/NOTIFICAÇÃO
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.textContent = message;
+            
+            if (type === 'success') {
+                toastIcon.setAttribute('data-lucide', 'check-circle');
+                toastIcon.className = 'w-5 h-5 text-green-400';
+            } else {
+                toastIcon.setAttribute('data-lucide', 'info');
+                toastIcon.className = 'w-5 h-5 text-blue-400';
+            }
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // 12. CONFIGURAÇÃO E INSTALAÇÃO PWA (MANIFEST & SERVICE WORKER INLINE)
+        function setupPWA() {
+            // Gerar Web App Manifest dinamicamente através de Data URL
+            const manifestJson = {
+                name: "CV Builder PWA",
+                short_name: "CV Builder",
+                description: "Gerador Profissional de Currículos Offline",
+                start_url: "./",
+                display: "standalone",
+                background_color: "#ffffff",
+                theme_color: "#2563eb",
+                icons: [
+                    {
+                        src: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>",
+                        sizes: "192x192 512x512",
+                        type: "image/svg+xml"
+                    }
+                ]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestJson)], { type: 'application/json' });
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = manifestUrl;
+            document.head.appendChild(link);
+
+            // Registrar Service Worker através de Blob URL para suporte offline
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'cv-pwa-v1';
+                    self.addEventListener('install', (e) => {
+                        e.waitUntil(
+                            caches.open(CACHE_NAME).then((cache) => {
+                                return cache.addAll(['./']);
+                            })
+                        );
+                    });
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(
+                            caches.match(e.request).then((res) => res || fetch(e.request))
+                        );
+                    });
+                `;
+                const swBlob = new Blob([swCode], { type: 'text/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+                navigator.serviceWorker.register(swUrl).catch(err => {
+                    console.log('SW registration error (esperado em ambiente sandbox):', err);
+                });
+            }
+
+            // Capturar evento de instalação do PWA
+            let deferredPrompt;
+            const installBtn = document.getElementById('pwa-install-btn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.classList.remove('hidden');
+            });
+
+            installBtn.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            showToast('App instalado com sucesso!', 'success');
+                        }
+                        deferredPrompt = null;
+                        installBtn.classList.add('hidden');
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
 ```
